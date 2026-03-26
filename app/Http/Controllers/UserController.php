@@ -189,4 +189,35 @@ class UserController extends Controller
             return redirect('/usuarios');
 
     }
+
+    public function destroy($id)
+    {
+        DB::beginTransaction();
+
+        try {
+
+            $user = User::findOrFail($id);
+
+            // 🔥 eliminar permisos
+            ModulePermission::where('user_id', $user->id)->delete();
+
+            // 🔥 eliminar relaciones
+            $user->branches()->detach();
+            $user->areas()->detach();
+
+            // 🔥 eliminar usuario
+            $user->delete();
+
+            DB::commit();
+
+            return redirect()->route('usuarios.index')
+                ->with('success', 'Usuario eliminado correctamente');
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return back()->with('error', $e->getMessage());
+        }
+    }
 }

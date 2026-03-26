@@ -58,3 +58,7 @@ Route::middleware(['auth'])->group(function () {
 use App\Http\Controllers\SucursalController;
 
 Route::resource('sucursales', SucursalController::class);
+
+use App\Http\Controllers\EquipoController;
+
+Route::resource('equipos', EquipoController::class);

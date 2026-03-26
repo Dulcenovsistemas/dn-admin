@@ -7,10 +7,12 @@ Sucursales
 </h1>
 
 <div class="mb-6">
-    <a href="{{ route('branches.create') }}" 
+    @if(auth()->user()->hasModulePermission('sucursales','create'))
+    <a href="{{ route('sucursales.create') }}" 
        class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">
         + Crear sucursal
     </a>
+    @endif
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -19,7 +21,7 @@ Sucursales
     <div class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
 
         <h2 class="font-semibold text-lg mb-2">
-            {{ $branch->nombre }}
+            {{ $branch->name }}
         </h2>
 
         <p class="text-sm text-gray-500 mb-4">
@@ -28,18 +30,23 @@ Sucursales
 
         <div class="flex justify-between items-center">
 
-            <a href="{{ route('branches.edit', $branch->id) }}"
+            @if(auth()->user()->hasModulePermission('sucursales','edit'))
+            <a href="{{ route('sucursales.edit', $branch->id) }}"
                class="text-blue-600 hover:underline text-sm">
                 Editar
             </a>
+            @endif
 
-            <form action="{{ route('branches.destroy', $branch->id) }}" method="POST">
+
+            @if(auth()->user()->hasModulePermission('sucursales','delete'))
+            <form action="{{ route('sucursales.destroy', $branch->id) }}" method="POST">
                 @csrf
                 @method('DELETE')
                 <button class="text-red-500 hover:underline text-sm">
                     Eliminar
                 </button>
             </form>
+            @endif
 
         </div>
 

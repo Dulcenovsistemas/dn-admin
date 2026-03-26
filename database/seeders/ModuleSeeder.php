@@ -30,8 +30,13 @@ class ModuleSeeder extends Seeder
         ]);
 
         Module::create([
-            'name' => 'Auditorías',
-            'slug' => 'auditorias'
+            'name' => 'Usuarios',
+            'slug' => 'usuarios'
+        ]);
+
+        Module::create([
+            'name' => 'Sucursales',
+            'slug' => 'sucursales'
         ]);
     }
 }

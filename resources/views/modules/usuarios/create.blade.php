@@ -94,6 +94,10 @@ Crear Usuario
     <h2 class="text-lg font-semibold mt-8 mb-4">
     Acceso a sucursales
     </h2>
+    <label class="block mb-2 font-semibold">
+        <input type="checkbox" id="select-all-branches">
+        Seleccionar todas las sucursales
+    </label>
 
     <div class="grid grid-cols-3 gap-4">
 
@@ -114,6 +118,11 @@ Crear Usuario
     <h2 class="text-lg font-semibold mt-8 mb-4">
     Acceso a áreas
     </h2>
+
+    <label class="block mb-2 font-semibold">
+        <input type="checkbox" id="select-all-areas">
+        Seleccionar todas las áreas
+    </label>
 
     <div class="grid grid-cols-3 gap-4">
 
@@ -193,6 +202,35 @@ document.addEventListener("DOMContentLoaded", function(){
     });
 
 });
+
+const selectAllBranches = document.getElementById("select-all-branches");
+
+if(selectAllBranches){
+    selectAllBranches.addEventListener("change", function(){
+
+        document.querySelectorAll(".branch-checkbox").forEach(function(branch){
+
+            branch.checked = selectAllBranches.checked;
+
+            // disparar evento manual para que se muestren áreas
+            branch.dispatchEvent(new Event('change'));
+
+        });
+
+    });
+}
+
+const selectAllAreas = document.getElementById("select-all-areas");
+
+if(selectAllAreas){
+    selectAllAreas.addEventListener("change", function(){
+
+        document.querySelectorAll(".area-item input").forEach(function(area){
+            area.checked = selectAllAreas.checked;
+        });
+
+    });
+}
 
 </script>
 

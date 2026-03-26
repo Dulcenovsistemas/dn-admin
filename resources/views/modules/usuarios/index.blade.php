@@ -49,6 +49,15 @@ Usuarios
                 Editar
 
                 </a>
+                <form action="{{ route('usuarios.destroy', $user->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+
+                    <button onclick="return confirm('¿Eliminar este usuario?')"
+                            class="text-red-500 hover:underline text-sm">
+                        Eliminar
+                    </button>
+                </form>
 
                 </td>
 
