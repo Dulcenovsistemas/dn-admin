@@ -62,3 +62,9 @@ Route::resource('sucursales', SucursalController::class);
 use App\Http\Controllers\EquipoController;
 
 Route::resource('equipos', EquipoController::class);
+
+Route::get('/equipos/sucursal/{id}', [EquipoController::class, 'porSucursal'])
+    ->name('equipos.sucursal');
+
+Route::get('/equipos/area/{id}', [EquipoController::class, 'porArea'])
+    ->name('equipos.area');  

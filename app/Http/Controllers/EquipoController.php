@@ -16,9 +16,9 @@ class EquipoController extends Controller
      */
     public function index()
     {
-        $equipos = Equipo::with(['sucursal','area'])->get();
+        $sucursales = Branch::with('areas.equipos')->get();
 
-        return view('modules..mantenimiento.equipos.index', compact('equipos'));
+        return view('modules.mantenimiento.equipos.index', compact('sucursales'));
     }
 
     /**
@@ -93,6 +93,21 @@ class EquipoController extends Controller
 
         return redirect()->route('equipos.index')
             ->with('success', 'Equipo registrado correctamente');
+    }
+
+
+    public function porSucursal($id)
+    {
+        $sucursal = Branch::with('areas.equipos')->findOrFail($id);
+
+        return view('modules.mantenimiento.equipos.sucursal', compact('sucursal'));
+    }
+
+    public function porArea($id)
+    {
+        $area = Area::with('equipos.sucursal')->findOrFail($id);
+
+        return view('modules.mantenimiento.equipos.area', compact('area'));
     }
 
     /**
