@@ -11,9 +11,6 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class EquipoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $sucursales = Branch::with('areas.equipos')->get();
@@ -21,80 +18,75 @@ class EquipoController extends Controller
         return view('modules.mantenimiento.equipos.index', compact('sucursales'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $user = auth()->user();
 
-        // 🔥 sucursales asignadas al usuario
         $sucursales = $user->branches;
-
-        // 🔥 áreas asignadas al usuario
         $areas = $user->areas;
 
         return view('modules.mantenimiento.equipos.create', compact('sucursales','areas'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // 🔹 VALIDACIÓN
         $request->validate([
             'sucursal_id' => 'required|exists:branches,id',
             'area_id' => 'required|exists:areas,id',
             'nombre' => 'required|string|max:255',
+            'marca_modelo' => 'nullable|string|max:255',
+            'numero_serie' => 'nullable|string|max:255',
+            'fecha_adquisicion' => 'nullable|date',
+            'responsable' => 'nullable|string|max:255',
+            'especificaciones' => 'nullable|string',
         ]);
 
-        // 🔹 OBTENER MODELOS
-        $sucursal = Branch::findOrFail($request->sucursal_id);
-        $area = Area::findOrFail($request->area_id);
+        try {
 
-        // 🔥 GENERAR CÓDIGO (FAB-BAT-001)
-        $sucursalCode = strtoupper(Str::substr($sucursal->name, 0, 3));
-        $areaCode = strtoupper(Str::substr($area->name, 0, 3));
+            $sucursal = Branch::findOrFail($request->sucursal_id);
+            $area = Area::findOrFail($request->area_id);
 
-        $count = Equipo::where('sucursal_id', $sucursal->id)
-            ->where('area_id', $area->id)
-            ->count() + 1;
+            $sucursalCode = strtoupper(Str::substr($sucursal->name, 0, 3));
+            $areaCode = strtoupper(Str::substr($area->name, 0, 3));
 
-        $numero = str_pad($count, 3, '0', STR_PAD_LEFT);
+            $count = Equipo::where('sucursal_id', $sucursal->id)
+                ->where('area_id', $area->id)
+                ->count() + 1;
 
-        $id = "$sucursalCode-$areaCode-$numero";
+            $numero = str_pad($count, 3, '0', STR_PAD_LEFT);
 
-        // 🔥 GENERAR QR
-        $qrPath = 'qrcodes/'.$id.'.svg';
+            $id = "$sucursalCode-$areaCode-$numero";
 
-        // crear carpeta si no existe
-        if (!file_exists(public_path('qrcodes'))) {
-            mkdir(public_path('qrcodes'), 0777, true);
+            $qrPath = 'qrcodes/'.$id.'.svg';
+
+            if (!file_exists(public_path('qrcodes'))) {
+                mkdir(public_path('qrcodes'), 0777, true);
+            }
+
+            QrCode::format('svg')
+                ->size(300)
+                ->generate(url('/equipos/'.$id), public_path($qrPath));
+
+            Equipo::create([
+                'id' => $id,
+                'sucursal_id' => $request->sucursal_id,
+                'area_id' => $request->area_id,
+                'nombre' => $request->nombre,
+                'marca_modelo' => $request->marca_modelo,
+                'numero_serie' => $request->numero_serie,
+                'fecha_adquisicion' => $request->fecha_adquisicion,
+                'responsable' => $request->responsable,
+                'especificaciones' => $request->especificaciones,
+                'qr_codigo' => $qrPath
+            ]);
+
+            return redirect()->route('equipos.area', $request->area_id)
+                    ->with('success', 'Equipo registrado correctamente');
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Ocurrió un error al registrar el equipo');
         }
-
-        QrCode::format('svg')
-            ->size(300)
-            ->generate(url('/equipos/'.$id), public_path($qrPath));
-
-        // 🔹 GUARDAR
-        Equipo::create([
-            'id' => $id,
-            'sucursal_id' => $request->sucursal_id,
-            'area_id' => $request->area_id,
-            'nombre' => $request->nombre,
-            'marca_modelo' => $request->marca_modelo,
-            'numero_serie' => $request->numero_serie,
-            'fecha_adquisicion' => $request->fecha_adquisicion,
-            'responsable' => $request->responsable,
-            'especificaciones' => $request->especificaciones,
-            'qr_codigo' => $qrPath
-        ]);
-
-        return redirect()->route('equipos.index')
-            ->with('success', 'Equipo registrado correctamente');
     }
-
 
     public function porSucursal($id)
     {
@@ -110,35 +102,150 @@ class EquipoController extends Controller
         return view('modules.mantenimiento.equipos.area', compact('area'));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $equipo = Equipo::with(['sucursal', 'area'])->findOrFail($id);
+
+        return view('modules.mantenimiento.equipos.show', compact('equipo'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $equipo = Equipo::findOrFail($id);
+
+        $user = auth()->user();
+
+        // 🔒 seguridad
+        if (!$user->branches->contains($equipo->sucursal_id)) {
+            return back()->with('error', 'No tienes permiso para editar este equipo');
+        }
+
+        $sucursales = $user->branches;
+        $areas = $user->areas;
+
+        return view('modules.mantenimiento.equipos.edit', compact('equipo', 'sucursales', 'areas'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'sucursal_id' => 'required|exists:branches,id',
+            'area_id' => 'required|exists:areas,id',
+            'nombre' => 'required|string|max:255',
+            'marca_modelo' => 'nullable|string|max:255',
+            'numero_serie' => 'nullable|string|max:255',
+            'fecha_adquisicion' => 'nullable|date',
+            'responsable' => 'nullable|string|max:255',
+            'especificaciones' => 'nullable|string',
+        ]);
+
+        $equipo = Equipo::findOrFail($id);
+
+        $user = auth()->user();
+
+        if (!$user->branches->contains($equipo->sucursal_id)) {
+            return back()->with('error', 'No tienes permiso para modificar este equipo');
+        }
+
+        try {
+
+            $cambioUbicacion = 
+                $equipo->sucursal_id != $request->sucursal_id ||
+                $equipo->area_id != $request->area_id;
+
+            if ($cambioUbicacion) {
+
+                $sucursal = Branch::findOrFail($request->sucursal_id);
+                $area = Area::findOrFail($request->area_id);
+
+                $sucursalCode = strtoupper(Str::substr($sucursal->name, 0, 3));
+                $areaCode = strtoupper(Str::substr($area->name, 0, 3));
+
+                $count = Equipo::where('sucursal_id', $sucursal->id)
+                    ->where('area_id', $area->id)
+                    ->count() + 1;
+
+                $numero = str_pad($count, 3, '0', STR_PAD_LEFT);
+
+                $nuevoId = "$sucursalCode-$areaCode-$numero";
+
+                $qrPath = 'qrcodes/'.$nuevoId.'.svg';
+
+                if (!file_exists(public_path('qrcodes'))) {
+                    mkdir(public_path('qrcodes'), 0777, true);
+                }
+
+                QrCode::format('svg')
+                    ->size(300)
+                    ->generate(url('/equipos/'.$nuevoId), public_path($qrPath));
+
+                if ($equipo->qr_codigo && file_exists(public_path($equipo->qr_codigo))) {
+                    try {
+                        unlink(public_path($equipo->qr_codigo));
+                    } catch (\Exception $e) {}
+                }
+
+                $equipo->update([
+                    'id' => $nuevoId,
+                    'sucursal_id' => $request->sucursal_id,
+                    'area_id' => $request->area_id,
+                    'nombre' => $request->nombre,
+                    'marca_modelo' => $request->marca_modelo,
+                    'numero_serie' => $request->numero_serie,
+                    'fecha_adquisicion' => $request->fecha_adquisicion,
+                    'responsable' => $request->responsable,
+                    'especificaciones' => $request->especificaciones,
+                    'qr_codigo' => $qrPath
+                ]);
+
+                return redirect()->route('equipos.show', $nuevoId)
+                    ->with('success', 'Equipo actualizado correctamente');
+            }
+
+            $equipo->update([
+                'sucursal_id' => $request->sucursal_id,
+                'area_id' => $request->area_id,
+                'nombre' => $request->nombre,
+                'marca_modelo' => $request->marca_modelo,
+                'numero_serie' => $request->numero_serie,
+                'fecha_adquisicion' => $request->fecha_adquisicion,
+                'responsable' => $request->responsable,
+                'especificaciones' => $request->especificaciones,
+            ]);
+
+            return redirect()->route('equipos.show', $equipo->id)
+                ->with('success', 'Equipo actualizado correctamente');
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al actualizar el equipo');
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $equipo = Equipo::findOrFail($id);
+
+        $user = auth()->user();
+
+        if (!$user->branches->contains($equipo->sucursal_id)) {
+            return back()->with('error', 'No tienes permiso para eliminar este equipo');
+        }
+
+        try {
+
+            if ($equipo->qr_codigo && file_exists(public_path($equipo->qr_codigo))) {
+                try {
+                    unlink(public_path($equipo->qr_codigo));
+                } catch (\Exception $e) {}
+            }
+
+            $equipo->delete();
+
+           return redirect()->route('equipos.area', $equipo->area_id)
+                ->with('success', 'Equipo eliminado correctamente');
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al eliminar el equipo');
+        }
     }
 }

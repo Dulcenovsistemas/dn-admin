@@ -46,4 +46,16 @@ $modules = \App\Models\Module::whereHas('permissions', function ($q) {
 
     </nav>
 
+    <div class="px-4 pb-6 border-t border-slate-700 pt-4">
+
+        <button onclick="openLogoutModal()"
+            class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-red-500/20 hover:text-red-400 transition">
+
+            <span>🚪</span>
+            Cerrar sesión
+        </button>
+
+    </div>
+
 </aside>
+
