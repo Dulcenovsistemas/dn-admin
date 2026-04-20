@@ -63,8 +63,6 @@ class SucursalController extends Controller
         ));
     }
 
-   
-
     public function update(Request $request, $id)
     {
         $branch = Branch::findOrFail($id);
@@ -75,13 +73,18 @@ class SucursalController extends Controller
             'name' => $request->name
         ]);
 
+        // 🧠 IDs que siguen existiendo en el form
+        $existingAreas = $request->areas_existing ?? [];
+        $ids = array_keys($existingAreas);
+
+        // ❌ eliminar las áreas que ya no vienen en el request
+        $branch->areas()->whereNotIn('id', $ids)->delete();
+
         // 🔥 1. actualizar áreas existentes
-        if ($request->areas_existing) {
-            foreach ($request->areas_existing as $areaId => $name) {
-                Area::where('id', $areaId)->update([
-                    'name' => $name
-                ]);
-            }
+        foreach ($existingAreas as $areaId => $name) {
+            Area::where('id', $areaId)->update([
+                'name' => $name
+            ]);
         }
 
         // 🔥 2. crear nuevas áreas

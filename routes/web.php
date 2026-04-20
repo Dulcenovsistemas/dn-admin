@@ -68,3 +68,10 @@ Route::get('/equipos/sucursal/{id}', [EquipoController::class, 'porSucursal'])
 
 Route::get('/equipos/area/{id}', [EquipoController::class, 'porArea'])
     ->name('equipos.area');  
+
+
+use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\SubcategoriaController;
+
+Route::resource('categorias', CategoriaController::class);
+Route::resource('subcategorias', SubcategoriaController::class);
