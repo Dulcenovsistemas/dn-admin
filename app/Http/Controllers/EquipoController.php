@@ -31,7 +31,7 @@ class EquipoController extends Controller
     public function store(Request $request)
     {
 
-        dd($request->all());
+     
         $request->validate([
             'sucursal_id' => 'required|exists:branches,id',
             'area_id' => 'required|exists:areas,id',
