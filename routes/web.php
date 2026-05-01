@@ -75,3 +75,10 @@ use App\Http\Controllers\SubcategoriaController;
 
 Route::resource('categorias', CategoriaController::class);
 Route::resource('subcategorias', SubcategoriaController::class);
+
+use App\Http\Controllers\ItemController;
+
+Route::resource('items', ItemController::class);
+
+Route::get('items/{item}/costs', [ItemController::class, 'costs'])->name('items.costs');
+Route::post('items/{item}/costs', [ItemController::class, 'storeCosts'])->name('items.costs.store');

@@ -17,7 +17,7 @@
     </div>
 
     @if(auth()->user()->hasModulePermission('recetario','create'))
-        <a href="{{ route('ingredientes.create') }}" 
+        <a href="{{ route('items.create') }}" 
            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition shadow-sm">
             + Nuevo ingrediente
         </a>

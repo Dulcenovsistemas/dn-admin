@@ -2,79 +2,41 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
-use App\Models\Categoria;
 
 class CategoriaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-      
-        $categorias = Categoria::with('subcategorias')->get();
-        return view('modules.recetario.ingredients.categorias.index', compact('categorias'));
+        $categories = Category::with('children')->whereNull('parent_id')->get();
+
+        return view('modules.recetario.ingredients.categories.index', compact('categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required'
+            'name' => 'required',
+            'parent_id' => 'nullable|exists:categories,id'
         ]);
 
-        Categoria::create($request->all());
+        Category::create([
+            'name' => $request->name,
+            'parent_id' => $request->parent_id
+        ]);
 
         return back()->with('success', 'Categoría creada');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
-        $categoria = Categoria::findOrFail($id);
+        $category = Category::findOrFail($id);
 
-        // eliminar subcategorías primero
-        $categoria->subcategorias()->delete();
+        // eliminar hijos también
+        $category->children()->delete();
 
-        // eliminar categoría
-        $categoria->delete();
+        $category->delete();
 
         return back()->with('success', 'Categoría eliminada');
     }

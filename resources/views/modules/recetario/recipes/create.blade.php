@@ -2,151 +2,187 @@
 
 @section('content')
 
-<h1 class="text-2xl font-bold mb-4">
-Nueva Receta
-</h1>
+<div class="max-w-5xl mx-auto">
 
-    <form action="{{ route('recetas.store') }}" method="POST">
+    {{-- HEADER --}}
+    <h1 class="text-2xl font-semibold mb-1">Nueva Receta</h1>
+    <p class="text-gray-500 mb-6">Define los componentes y costos de la receta</p>
 
-    @csrf
+    {{-- CARD --}}
+    <div class="bg-white rounded-2xl shadow-md p-6">
 
-        <div class="mb-4">
-            <label>Nombre</label>
-            <input type="text" name="name" class="border p-2 w-full">
+        <form action="{{ route('recetas.store') }}" method="POST">
+        @csrf
+
+        {{-- GRID --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <div>
+                <label class="text-sm text-gray-600">Nombre</label>
+                <input type="text" name="name"
+                    class="w-full mt-1 border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+
+            <div>
+                <label class="text-sm text-gray-600">Tipo</label>
+                <select name="type"
+                    class="w-full mt-1 border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none">
+                    <option value="producto">Producto</option>
+                    <option value="preparacion">Preparación</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="text-sm text-gray-600">Costo mano de obra</label>
+                <input type="number" step="0.01" name="labor_cost"
+                    class="w-full mt-1 border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" value="162">
+            </div>
+
+            <div>
+                <label class="text-sm text-gray-600">Rendimiento</label>
+                <input type="number" step="0.01" name="yield"
+                    class="w-full mt-1 border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+
         </div>
 
-        <div class="mb-4">
-            <label>Tipo</label>
-            <select name="type" class="border p-2 w-full">
-                <option value="producto">Producto</option>
-                <option value="preparacion">Preparación</option>
-            </select>
+        {{-- COMPONENTES --}}
+        <div class="mt-8">
+            <h2 class="text-lg font-semibold mb-3">Componentes</h2>
+
+            <div class="overflow-hidden border rounded-xl">
+
+                <table class="w-full text-sm">
+
+                    <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+                        <tr>
+                            <th class="p-3 text-left">Tipo</th>
+                            <th class="p-3 text-left">Item</th>
+                            <th class="p-3 text-left">Cantidad</th>
+                            <th class="p-3 text-left">Unidad</th>
+                            <th class="p-3 text-right"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="itemsBody"></tbody>
+
+                </table>
+
+            </div>
+
+            {{-- BOTÓN AGREGAR --}}
+            <button
+            type="button"
+            onclick="addItem()"
+            class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+            + Agregar componente
+            </button>
         </div>
 
-        <div class="mb-4">
-            <label>Costo mano de obra</label>
-            <input type="number" step="0.01" name="labor_cost" class="border p-2 w-full">
+        {{-- BOTONES --}}
+        <div class="flex justify-end gap-3 mt-8">
+
+            <a href="{{ route('recetas.index') }}"
+               class="px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
+                Cancelar
+            </a>
+
+            <button
+                class="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700 transition shadow-sm">
+                Guardar receta
+            </button>
+
         </div>
 
-        <div class="mb-4">
-            <label>Rendimiento</label>
-            <input type="number" step="0.01" name="yield" class="border p-2 w-full">
-        </div>
+        </form>
 
+    </div>
 
-        <h2 class="text-xl font-semibold mt-6 mb-2">
-        Componentes
-        </h2>
-
-        <table class="w-full border" id="itemsTable">
-
-            <thead>
-                <tr class="bg-gray-200">
-                    <th class="p-2">Tipo</th>
-                    <th class="p-2">Item</th>
-                    <th class="p-2">Cantidad</th>
-                    <th class="p-2">Unidad</th>
-                    <th class="p-2"></th>
-                </tr>
-            </thead>
-
-            <tbody></tbody>
-
-        </table>
-
-
-        <button
-        type="button"
-        onclick="addItem()"
-        class="mt-2 bg-blue-500 text-white px-3 py-1 rounded">
-
-        Agregar componente
-
-        </button>
-
-
-        <button class="bg-green-600 text-white px-4 py-2 mt-6 rounded">
-        Guardar receta
-        </button>
-
-    </form>
+</div>
 
 @endsection
 
-
 <script>
 
-    let itemIndex = 0;
+let itemIndex = 0;
 
-    function addItem(){
+function addItem(){
 
-    let row = `
-    <tr>
+let row = `
+<tr class="border-t hover:bg-gray-50 transition">
 
-    <td>
-    <select name="items[${itemIndex}][type]" class="border p-1 w-full">
-    <option value="ingredient">Ingrediente</option>
-    <option value="recipe">Preparación</option>
-    </select>
-    </td>
+<td class="p-2">
+<select name="items[${itemIndex}][type]" 
+    class="border rounded-md p-1 w-full text-sm">
+<option value="ingredient">Ingrediente</option>
+<option value="recipe">Preparación</option>
+</select>
+</td>
 
-    <td>
+<td class="p-2">
+<select 
+name="items[${itemIndex}][id]" 
+class="border rounded-md p-1 w-full text-sm"
+onchange="setUnit(this, ${itemIndex})">
 
-    <select name="items[${itemIndex}][id]" class="border p-1 w-full">
+<option value="">Seleccionar</option>
 
-    <option value="">Seleccionar</option>
+@foreach($ingredients as $ingredient)
+<option value="{{ $ingredient->id }}" data-unit="{{ $ingredient->unit }}">
+{{ $ingredient->name }}
+</option>
+@endforeach
 
-    @foreach($ingredients as $ingredient)
-    <option value="{{ $ingredient->id }}">
-    Ingrediente: {{ $ingredient->name }}
-    </option>
-    @endforeach
+@foreach($recipes as $recipe)
+<option value="{{ $recipe->id }}" data-unit="PZ">
+{{ $recipe->name }}
+</option>
+@endforeach
 
-    @foreach($recipes as $recipe)
-    <option value="{{ $recipe->id }}">
-    Preparación: {{ $recipe->name }}
-    </option>
-    @endforeach
+</select>
+</td>
 
-    </select>
+<td class="p-2">
+<input type="number" step="0.0001"
+name="items[${itemIndex}][quantity]"
+class="border rounded-md p-1 w-full text-sm">
+</td>
 
-    </td>
+<td class="p-2">
+<input type="text"
+name="items[${itemIndex}][unit]"
+id="unit-${itemIndex}"
+class="border rounded-md p-1 w-full bg-gray-100 text-sm"
+readonly>
+</td>
 
-    <td>
-    <input
-    type="number"
-    step="0.0001"
-    name="items[${itemIndex}][quantity]"
-    class="border p-1 w-full">
-    </td>
+<td class="p-2 text-right">
+<button type="button"
+class="w-7 h-7 flex items-center justify-center 
+rounded-full bg-red-50 text-red-500 
+hover:bg-red-100 hover:text-red-600 transition"
+onclick="this.closest('tr').remove()">
+✕
+</button>
+</td>
 
-    <td>
-    <input
-    type="text"
-    name="items[${itemIndex}][unit]"
-    class="border p-1 w-full">
-    </td>
+</tr>
+`;
 
-    <td>
-    <button
-    type="button"
-    class="bg-red-500 text-white px-2 py-1 rounded"
-    onclick="this.closest('tr').remove()">
+document
+.querySelector("#itemsBody")
+.insertAdjacentHTML("beforeend", row);
 
-    X
+itemIndex++;
+}
 
-    </button>
-    </td>
 
-    </tr>
-    `;
+// 🔥 AUTOCOMPLETAR UNIDAD
+function setUnit(select, index) {
+    const option = select.options[select.selectedIndex];
+    const unit = option.getAttribute('data-unit');
 
-    document
-    .querySelector("#itemsTable tbody")
-    .insertAdjacentHTML("beforeend", row);
-
-    itemIndex++;
-
-    }
+    document.getElementById(`unit-${index}`).value = unit || '';
+}
 
 </script>

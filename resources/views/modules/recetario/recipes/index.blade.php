@@ -2,100 +2,123 @@
 
 @section('content')
 
+<div class="max-w-6xl mx-auto">
+
+    {{-- HEADER --}}
     <div class="flex justify-between items-center mb-6">
 
-        <h1 class="text-2xl font-bold">
-        Recetas
-        </h1>
+        <div>
+            <h1 class="text-2xl font-semibold">Recetas</h1>
+            <p class="text-gray-500 text-sm">Administra y analiza costos de recetas</p>
+        </div>
 
         @if(auth()->user()->hasModulePermission('recetario','create'))
             <a href="{{ route('recetas.create') }}"
-            class="bg-green-600 text-white px-4 py-2 rounded">
-
-            Nueva receta
-
+               class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition shadow-sm">
+                + Nueva receta
             </a>
         @endif
 
     </div>
 
+    {{-- TABLA --}}
+    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
 
-    <table class="w-full border">
+        <table class="w-full text-sm">
 
-        <thead class="bg-gray-200">
+            <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+                <tr>
+                    <th class="p-3 text-left">Nombre</th>
+                    <th class="p-3 text-left">Tipo</th>
+                    <th class="p-3 text-left">Rendimiento</th>
+                    <th class="p-3 text-left">Costo total</th>
+                    <th class="p-3 text-left">Costo unitario</th>
+                    <th class="p-3 text-right">Acciones</th>
+                </tr>
+            </thead>
 
-            <tr>
-                <th class="p-2">Nombre</th>
-                <th class="p-2">Tipo</th>
-                <th class="p-2">Rendimiento</th>
-                <th class="p-2">Acciones</th>
-            </tr>
+            <tbody>
 
-        </thead>
+                @foreach($recipes as $recipe)
 
-        <tbody>
+                <tr class="border-t hover:bg-gray-50 transition">
 
-            @foreach($recipes as $recipe)
+                    {{-- Nombre --}}
+                    <td class="p-3 font-medium text-gray-800">
+                        {{ $recipe->name }}
+                    </td>
 
-            <tr class="border-t">
+                    {{-- Tipo --}}
+                    <td class="p-3">
+                        <span class="px-2 py-1 text-xs rounded-full
+                            {{ $recipe->type == 'producto' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700' }}">
+                            {{ ucfirst($recipe->type) }}
+                        </span>
+                    </td>
 
-                <td class="p-2">
-                {{ $recipe->name }}
-                </td>
+                    {{-- Rendimiento --}}
+                    <td class="p-3 text-gray-600">
+                        {{ $recipe->yield }}
+                    </td>
 
-                <td class="p-2">
-                {{ $recipe->type }}
-                </td>
+                    {{-- Costo total --}}
+                    <td class="p-3 font-semibold text-gray-800">
+                        ${{ number_format($recipe->calculateCost(),2) }}
+                    </td>
 
-                <td class="p-2">
-                {{ $recipe->yield }}
-                </td>
+                    {{-- Costo unitario --}}
+                    <td class="p-3 font-semibold text-blue-600">
+                        ${{ number_format($recipe->unitCost(),2) }}
+                    </td>
 
-                <td>
-                {{ number_format($recipe->calculateCost(),2) }}
-                </td>
+                    {{-- Acciones --}}
+                    <td class="p-3">
+                        <div class="flex justify-end gap-2">
 
-                <td>
-                {{ number_format($recipe->unitCost(),2) }}
-                </td>
+                            {{-- Ver --}}
+                            <a href="{{ route('recetas.show', $recipe->id) }}"
+                               class="px-3 py-1 rounded-md text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 transition">
+                                Ver
+                            </a>
 
+                            {{-- Editar --}}
+                            @if(auth()->user()->hasModulePermission('recetario','edit'))
+                            <a href="{{ route('recetas.edit', $recipe->id) }}"
+                               class="px-3 py-1 rounded-md text-xs bg-blue-50 text-blue-600 hover:bg-blue-100 transition">
+                                Editar
+                            </a>
+                            @endif
 
-                <td class="p-2 flex gap-2">
-                    <a href="{{ route('recetas.show', $recipe->id) }}"
-                    class="bg-gray-500 text-white px-2 py-1 rounded">
+                            {{-- Eliminar --}}
+                            @if(auth()->user()->hasModulePermission('recetario','delete'))
+                            <form action="{{ route('recetas.destroy', $recipe->id) }}" 
+                                  method="POST"
+                                  onsubmit="return confirm('¿Eliminar receta?')">
 
-                    Ver
+                                @csrf
+                                @method('DELETE')
 
-                    </a>
+                                <button type="submit"
+                                    class="px-3 py-1 rounded-md text-xs bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-600 transition">
+                                    Eliminar
+                                </button>
 
-                    @if(auth()->user()->hasModulePermission('recetario','edit'))
-                        <a href="{{ route('recetas.edit', $recipe->id) }}"
-                        class="bg-blue-500 text-white px-2 py-1 rounded">
-                        Editar
-                        </a>
-                    @endif
+                            </form>
+                            @endif
 
-                    @if(auth()->user()->hasModulePermission('recetario','delete'))
-                        <form action="{{ route('recetas.destroy', $recipe->id) }}" method="POST">
+                        </div>
+                    </td>
 
-                            @csrf
-                            @method('DELETE')
+                </tr>
 
-                            <button class="bg-red-500 text-white px-2 py-1 rounded">
-                            Eliminar
-                            </button>
+                @endforeach
 
-                        </form>
-                    @endif
+            </tbody>
 
-                </td>
+        </table>
 
-            </tr>
+    </div>
 
-            @endforeach
-
-        </tbody>
-
-    </table>
+</div>
 
 @endsection
