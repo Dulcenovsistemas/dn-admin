@@ -82,3 +82,5 @@ Route::resource('items', ItemController::class);
 
 Route::get('items/{item}/costs', [ItemController::class, 'costs'])->name('items.costs');
 Route::post('items/{item}/costs', [ItemController::class, 'storeCosts'])->name('items.costs.store');
+Route::post('items/{item}/costs', [ItemController::class, 'storeCosts'])
+    ->name('items.costs.store');

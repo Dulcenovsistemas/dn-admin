@@ -8,33 +8,34 @@ Recetario
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        <a href="{{ route('ingredientes.index') }}" 
-        class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
+    <!-- Ingredientes -->
+    <a href="{{ route('items.index') }}"
+    class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
+        <h2 class="font-semibold text-lg">Ingredientes</h2>
+        <p class="text-sm text-gray-500">Administrar ingredientes</p>
+    </a>
 
-        <h2 class="font-semibold text-lg">
-        Ingredientes
-        </h2>
+    <!-- Categorías -->
+    <a href="{{ route('categorias.index') }}" 
+    class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
+        <h2 class="font-semibold text-lg">Categorías</h2>
+        <p class="text-sm text-gray-500">Tipos de productos</p>
+    </a>
 
-        <p class="text-sm text-gray-500">
-        Administrar ingredientes
-        </p>
+    <!-- Subcategorías -->
+    <a href="" 
+    class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
+        <h2 class="font-semibold text-lg">Subcategorías</h2>
+        <p class="text-sm text-gray-500">Tamaños / variantes</p>
+    </a>
 
-        </a>
+    <!-- Recetas -->
+    <a href="" 
+    class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
+        <h2 class="font-semibold text-lg">Recetas</h2>
+        <p class="text-sm text-gray-500">Construcción de productos</p>
+    </a>
 
-
-        <a href="/recetas" 
-        class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
-
-        <h2 class="font-semibold text-lg">
-        Recetas
-        </h2>
-
-        <p class="text-sm text-gray-500">
-        Administrar recetas
-        </p>
-
-        </a>
-
-    </div>
+</div>
 
 @endsection

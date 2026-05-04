@@ -26,10 +26,14 @@ class Item extends Model
         return $this->hasMany(Item::class, 'parent_id');
     }
 
-    // 🧩 Categoría
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function subcategory()
+    {
+        return $this->belongsTo(Category::class, 'subcategory_id');
     }
 
     public function costs()
