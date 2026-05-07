@@ -55,6 +55,16 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
 
+                <div>
+                    <label class="block text-sm text-slate-500 mb-2">
+                        Número de empleado
+                    </label>
+
+                    <input type="text"
+                        name="employee_number"
+                        class="w-full border border-slate-300 rounded-xl p-3 uppercase">
+                </div>
+
                 <!-- NOMBRE -->
                 <div>
                     <label class="block text-sm font-medium text-slate-600 mb-2">

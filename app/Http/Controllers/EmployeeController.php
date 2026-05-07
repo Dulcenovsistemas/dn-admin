@@ -46,6 +46,8 @@ class EmployeeController extends Controller
 
         $request->validate([
 
+            'employee_number' => 'nullable|unique:employees,employee_number',
+
             // 🔵 Datos personales
             'name' => 'required',
             'last_name' => 'nullable',
@@ -100,6 +102,8 @@ class EmployeeController extends Controller
         */
 
         $employee = Employee::create([
+
+            'employee_number' => strtoupper($request->employee_number),
 
             'name' =>strtoupper($request->name),
             'last_name' =>strtoupper($request->last_name),
@@ -191,6 +195,8 @@ class EmployeeController extends Controller
     {
         $request->validate([
 
+            'employee_number' => 'nullable|unique:employees,employee_number',
+
             'name' => 'required',
 
             'branch_id' => 'nullable|exists:branches,id',
@@ -210,6 +216,8 @@ class EmployeeController extends Controller
         }
 
         $employee->update([
+
+            'employee_number' => strtoupper($request->employee_number),
 
             'name' => mb_strtoupper($request->name),
 

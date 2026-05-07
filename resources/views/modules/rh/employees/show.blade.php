@@ -18,9 +18,10 @@
             <p class="text-slate-500 mt-1 uppercase">
                 {{ $employee->branch->name ?? '-' }}
                 /
-                {{ $employee->jobPosition->name ?? '-' }}
-                /
                 {{ $employee->department ?? '-' }}
+                /
+                {{ $employee->jobPosition->name ?? '-' }}
+                
               
             </p>
 
@@ -225,7 +226,14 @@
 
                 <h2 class="text-sm uppercase tracking-wide text-slate-500 mb-5 text-center">
                     Empleado
+                    
+                    {{ $employee->employee_number }}
+
                 </h2>
+
+                <h3 class="text-xl font-bold text-slate-800 uppercase">
+
+                </h3>
 
                 <!-- FOTO -->
                 <div class="w-full aspect-square rounded-2xl overflow-hidden bg-slate-200">
@@ -252,6 +260,7 @@
 
                         {{ $employee->name }}
                         {{ $employee->last_name }}
+                        {{ $employee->second_last_name }}
 
                     </h3>
 

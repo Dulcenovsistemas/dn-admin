@@ -49,6 +49,17 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
+                        <div>
+                            <label class="block text-sm text-slate-500 mb-2">
+                                Número de empleado
+                            </label>
+
+                            <input type="text"
+                                name="employee_number"
+                                value="{{ old('name', $employee->employee_number) }}"
+                                class="w-full border border-slate-300 rounded-xl p-3 uppercase">
+                        </div>
+
                         <!-- NOMBRE -->
                         <div>
                             <label class="block text-sm text-slate-500 mb-2">

@@ -21,6 +21,7 @@
 
     <thead class="bg-gray-100 text-gray-700">
         <tr>
+            <th class="p-4 text-left">ID</th>
             <th class="p-4 text-left">Empleado</th>
             <th class="p-4 text-left">Sucursal</th>
             <th class="p-4 text-left">Puesto</th>
@@ -36,6 +37,11 @@
     @forelse($employees as $employee)
 
         <tr class="border-b hover:bg-gray-50 transition">
+
+             <!-- NUMERO DE EMPLEADO -->
+            <td class="p-4">
+    {{ $employee->employee_number ?? '-' }}
+</td>
 
             <!-- 👤 EMPLEADO -->
             <td class="p-4">
@@ -61,6 +67,7 @@
                         <p class="font-semibold text-gray-800">
                             {{ $employee->name }}
                             {{ $employee->last_name }}
+                            {{ $employee->second_last_name }}
                         </p>
 
                         <p class="text-xs text-gray-500">
