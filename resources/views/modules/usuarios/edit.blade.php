@@ -3,7 +3,7 @@
 @section('content')
 
 <h1 class="text-2xl font-semibold mb-6">
-Crear Usuario
+Editar Usuario
 </h1>
 
     <form method="POST" action="{{ route('usuarios.update', $user->id) }}">
@@ -23,8 +23,32 @@ Crear Usuario
         </div>
 
         <div>
-            <label class="block text-sm font-medium">Password</label>
-            <input type="password" name="password" class="w-full border rounded p-2" placeholder="Dejar vacío para no cambiar">
+            <label class="block text-sm font-medium mb-1">
+                Password
+            </label>
+
+            <div class="relative">
+
+                <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    class="w-full border rounded-lg p-2 pr-10 focus:ring-2 focus:ring-blue-500 outline-none">
+
+                <!-- BOTON OJO -->
+                <button
+                    type="button"
+                    onclick="togglePassword()"
+                    class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                    <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
+                    <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
+                    </svg>
+
+                </button>
+
+            </div>
         </div>
 
         <div>
@@ -269,6 +293,18 @@ document.addEventListener("DOMContentLoaded", function(){
     });
 
 });
+
+ function togglePassword() {
+
+        const input = document.getElementById('password');
+
+        if (input.type === 'password') {
+            input.type = 'text';
+        } else {
+            input.type = 'password';
+        }
+
+    }
 </script>
 
 @endsection
