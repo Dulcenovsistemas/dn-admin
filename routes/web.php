@@ -84,3 +84,10 @@ Route::get('items/{item}/costs', [ItemController::class, 'costs'])->name('items.
 Route::post('items/{item}/costs', [ItemController::class, 'storeCosts'])->name('items.costs.store');
 Route::post('items/{item}/costs', [ItemController::class, 'storeCosts'])
     ->name('items.costs.store');
+
+use App\Http\Controllers\EmployeeController;
+
+Route::resource('employees', EmployeeController::class);
+
+Route::get('/rh', [EmployeeController::class, 'index'])
+    ->middleware(['auth', 'module:rh']);
