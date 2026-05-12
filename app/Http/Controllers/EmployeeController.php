@@ -47,7 +47,7 @@ class EmployeeController extends Controller
 
         $request->validate([
 
-            'employee_number' => 'nullable|unique:employees,employee_number',
+            'employee_number' => 'nullable|unique:employees,employee_number,' . $employee->id,
 
             // 🔵 Datos personales
             'name' => 'required',
@@ -196,13 +196,17 @@ class EmployeeController extends Controller
     {
         $request->validate([
 
-            'employee_number' => 'nullable|unique:employees,employee_number',
+            'employee_number' => 'nullable|unique:employees,employee_number,' . $employee->id,
 
             'name' => 'required',
 
             'branch_id' => 'nullable|exists:branches,id',
 
-            'job_position_id' => 'nullable|exists:job_positions,id'
+            'job_position_id' => 'nullable|exists:job_positions,id',
+
+            'photo' => 'nullable|image|max:5120',
+            'files' => 'nullable|array',
+            'files.*' => 'file|max:5120',
 
         ]);
 
@@ -251,6 +255,21 @@ class EmployeeController extends Controller
             'photo' => $photoPath
 
         ]);
+
+        if ($request->hasFile('files')) {
+
+            foreach ($request->file('files') as $file) {
+
+                $path = $file->store('employees/files', 'public');
+
+                $employee->files()->create([
+                    'file_path' => $path,
+                    'file_name' => $file->getClientOriginalName()
+                ]);
+
+            }
+
+        }
 
         return redirect()
             ->route('employees.index')
