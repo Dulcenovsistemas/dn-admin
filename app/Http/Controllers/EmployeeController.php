@@ -44,41 +44,26 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-
         $request->validate([
-
-            'employee_number' => 'nullable|unique:employees,employee_number,' . $employee->id,
-
-            // 🔵 Datos personales
+            'employee_number' => 'nullable|unique:employees,employee_number',
             'name' => 'required',
             'last_name' => 'nullable',
             'second_last_name' => 'nullable',
-
             'birth_date' => 'nullable|date',
-
             'phone' => 'nullable',
             'address' => 'nullable',
-
-            // 🟢 Datos laborales
             'position' => 'nullable',
             'department' => 'nullable',
             'branch_id' => 'nullable|exists:branches,id',
             'job_position_id' => 'nullable|exists:job_positions,id',
-
             'hire_date' => 'nullable|date',
-
-            // 🟡 Datos fiscales
             'curp' => 'nullable',
             'rfc' => 'nullable',
             'imss' => 'nullable',
             'clabe' => 'nullable',
-
-            // 📸 Archivos multimedia
             'photo' => 'nullable|image|max:5120',
             'files' => 'nullable|array',
             'files.*' => 'file|max:5120',
-
-
         ]);
 
         /*
