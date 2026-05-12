@@ -21,9 +21,10 @@ class EmployeeController extends Controller
         return view('modules.rh.employees.index', compact('employees'));
     }
 
-    /**
+    /** 
      * Show the form for creating a new resource.
      */
+
    
     public function create()
     {
@@ -72,11 +73,11 @@ class EmployeeController extends Controller
             'imss' => 'nullable',
             'clabe' => 'nullable',
 
-            // 📸 Foto
-            'photo' => 'nullable|image',
+            // 📸 Archivos multimedia
+            'photo' => 'nullable|image|max:5120',
+            'files' => 'nullable|array',
+            'files.*' => 'file|max:5120',
 
-            // 📁 Archivos
-            'files.*' => 'nullable|file'
 
         ]);
 

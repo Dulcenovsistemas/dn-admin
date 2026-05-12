@@ -89,5 +89,14 @@ use App\Http\Controllers\EmployeeController;
 
 Route::resource('employees', EmployeeController::class);
 
-Route::get('/rh', [EmployeeController::class, 'index'])
-    ->middleware(['auth', 'module:rh']);
+Route::middleware(['auth', 'module:rh'])->group(function () {
+
+    Route::view('/rh', 'modules.rh.index')
+        ->name('rh.index');
+
+});
+
+use App\Http\Controllers\EmployeeVacationController;
+
+Route::get('/vacations', [EmployeeVacationController::class, 'index'])
+    ->name('vacations.index');

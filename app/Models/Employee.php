@@ -59,4 +59,22 @@ class Employee extends Model
         return $this->belongsTo(JobPosition::class);
     }
 
+
+    public function vacationMovements()
+    {
+        return $this->hasMany(VacationMovement::class);
+    }
+
+    public function vacationPeriods()
+    {
+        return $this->hasMany(VacationPeriod::class);
+    }
+
+    public function activeVacationPeriod()
+    {
+        return $this->hasOne(VacationPeriod::class)
+            ->where('status', 'open')
+            ->latestOfMany('period_start');
+    }
+
 }
