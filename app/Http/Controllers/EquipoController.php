@@ -13,7 +13,11 @@ class EquipoController extends Controller
 {
     public function index()
     {
-        $sucursales = Branch::with('areas.equipos')->get();
+           $sucursales = auth()->user()
+            ->branches()
+            ->with('areas')
+            ->get();
+
 
         return view('modules.mantenimiento.equipos.index', compact('sucursales'));
     }
@@ -51,6 +55,8 @@ class EquipoController extends Controller
             $sucursalCode = strtoupper(Str::substr($sucursal->name, 0, 3));
             $areaCode = strtoupper(Str::substr($area->name, 0, 3));
 
+
+            
             $count = Equipo::where('sucursal_id', $sucursal->id)
                 ->where('area_id', $area->id)
                 ->count() + 1;

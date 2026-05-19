@@ -8,10 +8,12 @@
         Empleados
     </h1>
 
-    <a href="{{ route('employees.create') }}"
-       class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">
-        + Nuevo empleado
-    </a>
+    @if(auth()->user()->hasModulePermission('empleados', 'edit'))
+        <a href="{{ route('employees.create') }}"
+        class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+            + Nuevo empleado
+        </a>
+    @endif
 
 </div>
 
@@ -128,23 +130,29 @@
                             Ver
                         </a>
 
-                    <a href="{{ route('employees.edit', $employee->id) }}"
-                       class="text-blue-600 hover:underline">
-                        Editar
-                    </a>
 
-                    <form action="{{ route('employees.destroy', $employee->id) }}"
-                          method="POST"
-                          onsubmit="return confirm('¿Eliminar empleado?')">
+                    
+                    @if(auth()->user()->hasModulePermission('empleados', 'edit'))
+                        <a href="{{ route('employees.edit', $employee->id) }}"
+                        class="text-blue-600 hover:underline">
+                            Editar
+                        </a>
+                    @endif
 
-                        @csrf
-                        @method('DELETE')
+                    @if(auth()->user()->hasModulePermission('empleados', 'delete'))
+                        <form action="{{ route('employees.destroy', $employee->id) }}"
+                            method="POST"
+                            onsubmit="return confirm('¿Eliminar empleado?')">
 
-                        <button class="text-red-500 hover:underline">
-                            Eliminar
-                        </button>
+                            @csrf
+                            @method('DELETE')
 
-                    </form>
+                            <button class="text-red-500 hover:underline">
+                                Eliminar
+                            </button>
+
+                        </form>
+                    @endif
 
                 </div>
 

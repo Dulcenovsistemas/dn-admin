@@ -80,4 +80,68 @@ class VacationCalculatorService
 
         return $period->refresh();
     }
+
+    public function calculatePreview(Employee $employee, string $currentDate, int $takenDays = 0): array
+{
+    $hireDate = Carbon::parse($employee->hire_date)->startOfDay();
+    $today = Carbon::parse($currentDate)->startOfDay();
+
+    /*
+    |--------------------------------------------------------------------------
+    | AÑOS CUMPLIDOS
+    |--------------------------------------------------------------------------
+    */
+
+    $yearsOfService = $hireDate->diffInYears($today);
+
+    /*
+    |--------------------------------------------------------------------------
+    | INICIO DEL PERIODO ACTUAL
+    |--------------------------------------------------------------------------
+    */
+
+    $periodStart = $hireDate->copy()->addYears($yearsOfService);
+
+    /*
+    |--------------------------------------------------------------------------
+    | FIN DEL PERIODO
+    |--------------------------------------------------------------------------
+    */
+
+    $periodEnd = $periodStart->copy()->addYear()->subDay();
+
+    /*
+    |--------------------------------------------------------------------------
+    | DÍAS QUE LE CORRESPONDEN
+    |--------------------------------------------------------------------------
+    */
+
+    $entitledDays = $this->getDaysByYears($yearsOfService);
+
+    /*
+    |--------------------------------------------------------------------------
+    | DISPONIBLES
+    |--------------------------------------------------------------------------
+    */
+
+    $availableDays = max($entitledDays - $takenDays, 0);
+
+    return [
+        'employee' => $employee->name,
+
+        'hire_date' => $hireDate->format('d/m/Y'),
+
+        'years_of_service' => $yearsOfService,
+
+        'period_start' => $periodStart->format('d/m/Y'),
+
+        'period_end' => $periodEnd->format('d/m/Y'),
+
+        'entitled_days' => $entitledDays,
+
+        'taken_days' => $takenDays,
+
+        'available_days' => $availableDays,
+    ];
+}
 } 

@@ -9,33 +9,37 @@ Mantenimiento
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
     {{-- Empleados --}}
-    <a href="{{ route('employees.index') }}" 
-       class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
+    @if(auth()->user()->hasModulePermission('empleados','view'))
+        <a href="{{ route('employees.index') }}" 
+        class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
 
-        <h2 class="font-semibold text-lg">
-            Empleados
-        </h2>
+            <h2 class="font-semibold text-lg">
+                Empleados
+            </h2>
 
-        <p class="text-sm text-gray-500">
-            Gestión de Empleados
-        </p>
+            <p class="text-sm text-gray-500">
+                Gestión de Empleados
+            </p>
 
-    </a>
+        </a>
+    @endif
 
 
-    {{-- Vacaciones --}}
-    <a href="{{ route('vacations.index') }}"
-       class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
+    @if(auth()->user()->hasModulePermission('vacaciones','view'))
+        {{-- Vacaciones --}}
+        <a href="{{ route('vacations.index') }}"
+        class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
 
-        <h2 class="font-semibold text-lg">
-            Vacaciones
-        </h2>
+            <h2 class="font-semibold text-lg">
+                Vacaciones
+            </h2>
 
-        <p class="text-sm text-gray-500">
-            Calculadora de dìas, gestion de periodos.
-        </p>
+            <p class="text-sm text-gray-500">
+                Calculadora de dìas, gestion de periodos.
+            </p>
 
-    </a>
+        </a>
+    @endif
 
 
     {{-- EXPEDIENTES --}}

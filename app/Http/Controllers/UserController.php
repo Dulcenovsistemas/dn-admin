@@ -27,7 +27,9 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::all();
-        $modules = Module::all();
+        $modules = Module::whereNull('parent_id')
+            ->with('children')
+            ->get();
         $branches = Branch::all();
         $areas = Area::all();
 
@@ -45,7 +47,9 @@ class UserController extends Controller
         $user = User::with(['branches', 'areas', 'modulePermissions'])->findOrFail($id);
 
         // módulos
-        $modules = Module::all();
+        $modules = Module::whereNull('parent_id')
+            ->with('children')
+            ->get();
 
         // roles 🔥 (esto faltaba)
         $roles = Role::all();

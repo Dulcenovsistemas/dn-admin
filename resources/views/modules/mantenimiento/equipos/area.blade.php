@@ -17,11 +17,14 @@
         ← Volver a áreas
     </a>
 
+    @if(auth()->user()->hasModulePermission('equipos', 'create'))
     <a href="{{ route('equipos.create') }}" 
        class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">
         + Crear equipo
     </a>
-
+    @endif
+   
+    
 </div>
 
 <div class="bg-white rounded-xl shadow overflow-hidden">
@@ -73,20 +76,25 @@
                             Ver
                         </a>
 
-                        <a href="{{ route('equipos.edit', $equipo->id) }}"
-                           class="text-gray-600 hover:text-black">
-                            Editar
-                        </a>
+                        @if(auth()->user()->hasModulePermission('equipos', 'edit'))
+                            <a href="{{ route('equipos.edit', $equipo->id) }}"
+                            class="text-gray-600 hover:text-black">
+                                Editar
+                            </a>
+                        @endif
 
-                        <form action="{{ route('equipos.destroy', $equipo->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
 
-                            <button onclick="return confirm('¿Eliminar este equipo?')"
-                                    class="text-red-500 hover:text-red-700">
-                                Eliminar
-                            </button>
-                        </form>
+                        @if(auth()->user()->hasModulePermission('equipos', 'delete'))
+                            <form action="{{ route('equipos.destroy', $equipo->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+
+                                <button onclick="return confirm('¿Eliminar este equipo?')"
+                                        class="text-red-500 hover:text-red-700">
+                                    Eliminar
+                                </button>
+                            </form>
+                        @endif
 
                     </div>
 
