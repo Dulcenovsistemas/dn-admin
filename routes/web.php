@@ -61,6 +61,9 @@ Route::resource('sucursales', SucursalController::class);
 
 use App\Http\Controllers\EquipoController;
 
+Route::get('/equipos/create/{area}', [EquipoController::class, 'create'])
+    ->name('equipos.create');
+
 Route::resource('equipos', EquipoController::class);
 
 Route::get('/equipos/sucursal/{id}', [EquipoController::class, 'porSucursal'])

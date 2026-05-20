@@ -18,10 +18,10 @@
     </a>
 
     @if(auth()->user()->hasModulePermission('equipos', 'create'))
-    <a href="{{ route('equipos.create') }}" 
-       class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">
-        + Crear equipo
-    </a>
+        <a href="{{ route('equipos.create', ['area' => $area->id]) }}" 
+        class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+            + Crear equipo
+        </a>
     @endif
    
     

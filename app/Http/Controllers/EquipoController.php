@@ -22,14 +22,18 @@ class EquipoController extends Controller
         return view('modules.mantenimiento.equipos.index', compact('sucursales'));
     }
 
-    public function create()
+    public function create($areaId)
     {
         $user = auth()->user();
 
-        $sucursales = $user->branches;
-        $areas = $user->areas;
+        $area = $user->areas()
+            ->with('branch')
+            ->where('areas.id', $areaId)
+            ->firstOrFail();
 
-        return view('modules.mantenimiento.equipos.create', compact('sucursales','areas'));
+        $sucursal = $area->branch;
+
+        return view('modules.mantenimiento.equipos.create', compact('area', 'sucursal'));
     }
 
     public function store(Request $request)
@@ -257,3 +261,6 @@ class EquipoController extends Controller
         }
     }
 }
+
+
+
