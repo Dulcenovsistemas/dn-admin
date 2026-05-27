@@ -101,5 +101,10 @@ Route::middleware(['auth', 'module:rh'])->group(function () {
 
 use App\Http\Controllers\EmployeeVacationController;
 
-Route::get('/vacations', [EmployeeVacationController::class, 'index'])
-    ->name('vacations.index');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/vacations', [EmployeeVacationController::class, 'index'])->name('vacations.index');
+    Route::get('/vacations/create/{employee}', [EmployeeVacationController::class, 'create'])->name('vacations.create');
+    Route::post('/vacations/store', [EmployeeVacationController::class, 'store'])->name('vacations.store');
+    Route::get('/vacations/{employee}/periods', [EmployeeVacationController::class, 'periods'])->name('vacations.periods');
+    Route::get('/vacations/{vacation}/receipt', [EmployeeVacationController::class, 'receipt'])->name('vacations.receipt');
+});
