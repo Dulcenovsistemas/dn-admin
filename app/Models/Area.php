@@ -25,4 +25,9 @@ class Area extends Model
     {
         return $this->belongsTo(Branch::class, 'branch_id');
     }
+
+    public function servicios()
+    {
+        return $this->hasMany(Servicio::class);
+    }
 }

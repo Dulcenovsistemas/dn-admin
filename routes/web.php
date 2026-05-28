@@ -108,3 +108,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/vacations/{employee}/periods', [EmployeeVacationController::class, 'periods'])->name('vacations.periods');
     Route::get('/vacations/{vacation}/receipt', [EmployeeVacationController::class, 'receipt'])->name('vacations.receipt');
 });
+
+Route::get('/vacations/{vacation}/receipt-pdf', [EmployeeVacationController::class, 'receiptPdf'])
+    ->name('vacations.receipt.pdf');
+
+
+use App\Http\Controllers\ServicioController;
+
+Route::get('/servicios/create/{area}', [ServicioController::class, 'create'])
+    ->name('servicios.create');
+
+Route::resource('servicios', ServicioController::class);
+
+Route::get('/servicios/sucursal/{id}', [ServicioController::class, 'porSucursal'])
+    ->name('servicios.sucursal');
+
+Route::get('/servicios/area/{area}', [ServicioController::class, 'porArea'])
+    ->name('servicios.area');
+

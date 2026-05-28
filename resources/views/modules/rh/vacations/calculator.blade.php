@@ -262,8 +262,7 @@
         }).format(value);
     }
 
-    function calculateDays() {
-
+   function calculateDays() {
         const startDate = document.getElementById('start_date').value;
         const endDate = document.getElementById('end_date').value;
 
@@ -274,16 +273,26 @@
         const start = new Date(startDate);
         const end = new Date(endDate);
 
-        const diffTime = end - start;
-
-        if (diffTime < 0) {
+        if (end < start) {
             return 0;
         }
 
-        // +1 para incluir el día inicial
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        let count = 0;
 
-        return diffDays;
+        // Crear copia para no modificar start
+        let currentDate = new Date(start);
+
+        while (currentDate <= end) {
+
+            // 0 = Domingo
+            if (currentDate.getDay() !== 0) {
+                count++;
+            }
+
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        return count;
     }
 
     function calculateVacations() {

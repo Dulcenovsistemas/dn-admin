@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Vacation;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class EmployeeVacationController extends Controller
 {
@@ -79,6 +80,7 @@ class EmployeeVacationController extends Controller
         $primaVacacional = $vacationPay * 0.25;
         $totalPay = $vacationPay + $primaVacacional;
 
+
         $vacation = Vacation::create([
             'employee_id' => $employee->id,
             'start_date' => $request->start_date,
@@ -94,7 +96,7 @@ class EmployeeVacationController extends Controller
         ]);
 
         return redirect()->route('vacations.receipt', $vacation->id);
-        }
+    }
 
     public function receipt(Vacation $vacation)
     {
@@ -110,6 +112,16 @@ class EmployeeVacationController extends Controller
             ->get();
 
         return view('modules.rh.vacations.periods', compact('employee', 'periods'));
+    }
+
+    public function receiptPdf(Vacation $vacation)
+    {
+        $vacation->load('employee');
+
+        $pdf = Pdf::loadView('modules.rh.vacations.receipt-pdf', compact('vacation'))
+            ->setPaper('letter', 'portrait');
+
+        return $pdf->stream('recibo-vacaciones.pdf');
     }
     
 }

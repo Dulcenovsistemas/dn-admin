@@ -8,10 +8,11 @@
             <p class="text-sm text-gray-500">Documento para firma e impresión</p>
         </div>
 
-        <button onclick="window.print()"
-                class="rounded-xl bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition">
-            Imprimir
-        </button>
+        <a href="{{ route('vacations.receipt.pdf', $vacation->id) }}"
+   target="_blank"
+   class="rounded-xl bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition">
+    Ver PDF
+</a>
     </div>
 
     <div class="bg-white rounded-3xl shadow-sm border border-gray-200 p-8">

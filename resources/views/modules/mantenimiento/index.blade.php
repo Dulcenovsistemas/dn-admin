@@ -27,7 +27,7 @@
 
     {{-- SERVICIOS --}}
     @if(auth()->user()->hasModulePermission('servicios','view'))
-        <a href="#" 
+        <a href="{{ route('servicios.index') }}"
            class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
 
             <h2 class="font-semibold text-lg">

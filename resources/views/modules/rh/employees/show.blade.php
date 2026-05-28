@@ -268,9 +268,9 @@
                         {{ $employee->jobPosition->name ?? '-' }}
                     </p>
 
-                    <p class="text-sm text-slate-400 mt-1">
-                        Nacimiento:
-                        {{ $employee->birth_date ?? '-' }}
+                   <p class="text-sm text-slate-400 mt-1">
+                        Edad:
+                        {{ $employee->birth_date ? \Carbon\Carbon::parse($employee->birth_date)->age . ' años' : '-' }}
                     </p>
 
                 </div>
