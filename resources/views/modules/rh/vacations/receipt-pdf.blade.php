@@ -131,19 +131,30 @@
                 <div class="value">{{ $vacation->employee->employee_number ?? $vacation->employee->id }}</div>
             </td>
         </tr>
-        <tr>
-            <td>
-                <div class="label">Fecha de ingreso</div>
-                <div class="value">{{ \Carbon\Carbon::parse($vacation->employee->hire_date)->format('d/m/Y') }}</div>
-            </td>
-            <td>
-                <div class="label">Periodo vacacional</div>
-                <div class="value">
-                    {{ \Carbon\Carbon::parse($vacation->start_date)->format('d/m/Y') }} -
-                    {{ \Carbon\Carbon::parse($vacation->end_date)->format('d/m/Y') }}
-                </div>
-            </td>
-        </tr>
+       <tr>
+    <td>
+        <div class="label">Fecha de ingreso</div>
+        <div class="value">
+            {{ \Carbon\Carbon::parse($vacation->employee->hire_date)->format('d/m/Y') }}
+        </div>
+    </td>
+
+    <div class="label">Periodo vacacional correspondiente</div>
+<div class="value">
+    {{ $vacation->vacation_year == 1 ? 'Primer año' : $vacation->vacation_year . '° Año' }}
+</div>
+</tr>
+
+<tr>
+    <td colspan="2">
+        <div class="label">Periodo vacacional</div>
+        <div class="value">
+            {{ \Carbon\Carbon::parse($vacation->start_date)->format('d/m/Y') }}
+            -
+            {{ \Carbon\Carbon::parse($vacation->end_date)->format('d/m/Y') }}
+        </div>
+    </td>
+</tr>
         <tr>
             <td>
                 <div class="label">Días disponibles</div>

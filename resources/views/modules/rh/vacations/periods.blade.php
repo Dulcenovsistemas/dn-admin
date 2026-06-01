@@ -28,6 +28,7 @@
                     <tr>
                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase">Inicio</th>
                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase">Fin</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase">Año</th>
                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase">Días tomados</th>
                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase">Saldo</th>
                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase">Total pagado</th>
@@ -42,6 +43,9 @@
                             </td>
                             <td class="px-6 py-4 text-center">
                                 {{ \Carbon\Carbon::parse($period->end_date)->format('d/m/Y') }}
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                {{ $period->vacation_year == 1 ? '1er Año' : $period->vacation_year . '° Año' }}
                             </td>
                             <td class="px-6 py-4 text-center">
                                 {{ $period->taken_days }}
