@@ -9,16 +9,25 @@
         </div>
 
         <a href="{{ route('vacations.receipt.pdf', $vacation->id) }}"
-   target="_blank"
-   class="rounded-xl bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition">
-    Ver PDF
-</a>
+        target="_blank"
+        class="rounded-xl bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition">
+            Ver PDF
+        </a>
+
     </div>
 
+    
     <div class="bg-white rounded-3xl shadow-sm border border-gray-200 p-8">
         <div class="text-center border-b pb-5 mb-6">
             <h2 class="text-2xl font-bold">RECIBO DE VACACIONES</h2>
             <p class="text-gray-500">Registro de periodo vacacional y pago correspondiente</p>
+
+            <div>
+                <p class="font-semibold text-gray-800">
+                    {{ $vacation->vacation_year == 1 ? 'Primer año' : 'Año ' . $vacation->vacation_year }}
+                </p>
+            </div>
+
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
