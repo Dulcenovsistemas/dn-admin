@@ -109,8 +109,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/vacations/{vacation}/receipt', [EmployeeVacationController::class, 'receipt'])->name('vacations.receipt');
 });
 
+Route::get('/vacations/{vacation}/edit', [EmployeeVacationController::class, 'edit'])->name('vacations.edit');
+Route::put('/vacations/{vacation}', [EmployeeVacationController::class, 'update'])->name('vacations.update');
+
 Route::get('/vacations/{vacation}/receipt-pdf', [EmployeeVacationController::class, 'receiptPdf'])
     ->name('vacations.receipt.pdf');
+
+Route::delete('/vacations/{vacation}', [EmployeeVacationController::class, 'destroy'])
+    ->name('vacations.destroy');
 
 
 use App\Http\Controllers\ServicioController;

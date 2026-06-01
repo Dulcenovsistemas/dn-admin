@@ -32,7 +32,7 @@
                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase">Días tomados</th>
                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase">Saldo</th>
                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase">Total pagado</th>
-                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase">Recibo</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase">Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-100">
@@ -56,11 +56,33 @@
                             <td class="px-6 py-4 text-center">
                                 ${{ number_format($period->total_pay, 2) }}
                             </td>
-                            <td class="px-6 py-4 text-center">
-                                <a href="{{ route('vacations.receipt', $period->id) }}"
-                                   class="inline-flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2 rounded-xl transition">
-                                    Ver recibo
-                                </a>
+                           <td class="px-6 py-4 text-center">
+                                <div class="flex items-center justify-center gap-2">
+
+                                    <a href="{{ route('vacations.receipt', $period->id) }}"
+                                    class="inline-flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-3 py-2 rounded-xl transition">
+                                        Recibo
+                                    </a>
+
+                                    <a href="{{ route('vacations.edit', $period->id) }}"
+                                    class="inline-flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-white font-medium px-3 py-2 rounded-xl transition">
+                                        Editar
+                                    </a>
+
+                                     <form action="{{ route('vacations.destroy', $period->id) }}"
+                                        method="POST"
+                                        onsubmit="return confirm('¿Seguro que deseas eliminar este periodo?');"
+                                        class="inline">
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button type="submit"
+                                                class="inline-flex items-center justify-center bg-red-600 hover:bg-red-700 text-white font-medium px-3 py-2 rounded-xl transition">
+                                            Eliminar
+                                        </button>
+                                    </form>
+
+                                </div>
                             </td>
                         </tr>
                     @empty
