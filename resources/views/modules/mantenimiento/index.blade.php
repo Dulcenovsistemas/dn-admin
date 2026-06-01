@@ -26,20 +26,12 @@
 
 
     {{-- SERVICIOS --}}
-    @if(auth()->user()->hasModulePermission('servicios','view'))
-        <a href="{{ route('servicios.index') }}"
-           class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
-
-            <h2 class="font-semibold text-lg">
-                Servicios
-            </h2>
-
-            <p class="text-sm text-gray-500">
-                Catálogo de servicios
-            </p>
-
-        </a>
-    @endif
+@if(auth()->user()->hasModulePermission('servicios','view'))
+    <a href="{{ route('servicios.index') }}" class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
+        <h2 class="font-semibold text-lg">Servicios</h2>
+        <p class="text-sm text-gray-500">Gestión de servicios</p>
+    </a>
+@endif
 
 
     {{-- ÓRDENES --}}

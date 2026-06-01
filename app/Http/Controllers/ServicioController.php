@@ -2,94 +2,48 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Area;
 use App\Models\Branch;
+use App\Models\Area;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
 
 class ServicioController extends Controller
 {
-    public function index(Area $area)
+    public function index()
     {
-        $area->load(['sucursal', 'servicios']);
+        $sucursales = auth()->user()
+            ->branches()
+            ->with('areas')
+            ->get();
 
-        return view('modules.mantenimiento.servicios.index', compact('area'));
+        return view('modules.mantenimiento.servicios.index', compact('sucursales'));
     }
 
-    public function create()
+    public function porSucursal($id)
     {
-        $sucursales = Branch::all();
-        $areas = Area::all();
+        $sucursal = Branch::with('areas.servicios')->findOrFail($id);
 
-        return view('servicios.create', compact('sucursales', 'areas'));
+        return view('modules.mantenimiento.servicios.sucursal', compact('sucursal'));
     }
 
-    public function store(Request $request)
+    public function porArea($id)
     {
-        $data = $request->validate([
-            'sucursal_id' => ['required', 'exists:branches,id'],
-            'area_id' => ['required', 'exists:areas,id'],
-            'tipo_servicio' => ['required', 'string'],
-            'nombre' => ['required', 'string', 'max:255'],
-            'descripcion' => ['nullable', 'string'],
-            'proveedor' => ['nullable', 'string', 'max:255'],
-            'numero_contrato' => ['nullable', 'string', 'max:255'],
-            'costo_mensual' => ['nullable', 'numeric', 'min:0'],
-            'fecha_inicio' => ['nullable', 'date'],
-            'estatus' => ['required', 'in:Activo,Suspendido,Cancelado'],
-        ]);
+        $area = Area::with('servicios.sucursal')->findOrFail($id);
 
-        Servicio::create($data);
-
-        return redirect()->route('servicios.index')->with('success', 'Servicio creado correctamente.');
+        return view('modules.mantenimiento.servicios.area', compact('area'));
     }
 
-    public function show(Servicio $servicio)
+    public function create($areaId)
     {
-        $servicio->load(['sucursal', 'area']);
+        $user = auth()->user();
 
-        return view('servicios.show', compact('servicio'));
-    }
+        $area = $user->areas()
+            ->with('branch')
+            ->where('areas.id', $areaId)
+            ->firstOrFail();
 
-    public function edit(Servicio $servicio)
-    {
-        $sucursales = Branch::all();
-        $areas = Area::all();
+        $sucursal = $area->branch;
 
-        return view('servicios.edit', compact('servicio', 'sucursales', 'areas'));
-    }
-
-    public function update(Request $request, Servicio $servicio)
-    {
-        $data = $request->validate([
-            'sucursal_id' => ['required', 'exists:branches,id'],
-            'area_id' => ['required', 'exists:areas,id'],
-            'tipo_servicio' => ['required', 'string'],
-            'nombre' => ['required', 'string', 'max:255'],
-            'descripcion' => ['nullable', 'string'],
-            'proveedor' => ['nullable', 'string', 'max:255'],
-            'numero_contrato' => ['nullable', 'string', 'max:255'],
-            'costo_mensual' => ['nullable', 'numeric', 'min:0'],
-            'fecha_inicio' => ['nullable', 'date'],
-            'estatus' => ['required', 'in:Activo,Suspendido,Cancelado'],
-        ]);
-
-        $servicio->update($data);
-
-        return redirect()->route('servicios.index')->with('success', 'Servicio actualizado correctamente.');
-    }
-
-    public function destroy(Servicio $servicio)
-    {
-        $servicio->delete();
-
-        return redirect()->route('servicios.index')->with('success', 'Servicio eliminado correctamente.');
-    }
-
-    public function porArea(Area $area)
-    {
-        $area->load(['sucursal', 'servicios']);
-
-        return view('modules.mantenimiento.servicios.index', compact('area'));
+        return view('modules.mantenimiento.servicios.create', compact('area', 'sucursal'));
     }
 }

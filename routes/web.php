@@ -115,14 +115,13 @@ Route::get('/vacations/{vacation}/receipt-pdf', [EmployeeVacationController::cla
 
 use App\Http\Controllers\ServicioController;
 
-Route::get('/servicios/create/{area}', [ServicioController::class, 'create'])
-    ->name('servicios.create');
-
-Route::resource('servicios', ServicioController::class);
-
-Route::get('/servicios/sucursal/{id}', [ServicioController::class, 'porSucursal'])
-    ->name('servicios.sucursal');
+Route::get('/servicios', [ServicioController::class, 'index'])
+    ->name('servicios.index');
 
 Route::get('/servicios/area/{area}', [ServicioController::class, 'porArea'])
     ->name('servicios.area');
 
+Route::get('/servicios/create/{area}', [ServicioController::class, 'create'])
+    ->name('servicios.create');
+
+Route::resource('servicios', ServicioController::class)->except(['index', 'create']);

@@ -3,22 +3,22 @@
 @section('content')
 
 <h1 class="text-2xl font-semibold mb-2">
-    {{ $area->name }}
+    {{ $area?->name ?? 'Servicios' }}
 </h1>
 
 <p class="text-gray-500 mb-6">
-    {{ $area->sucursal->name }}
+    {{ $area?->sucursal?->name ?? 'Sin sucursal' }}
 </p>
 
 <div class="mb-6 flex justify-between items-center">
 
-    <a href="{{ route('servicios.sucursal', $area->branch_id) }}" 
+    <a href="{{ route('servicios.sucursal', $area->branch_id) }}"
        class="text-blue-600 hover:underline text-sm">
         ← Volver a áreas
     </a>
 
     @if(auth()->user()->hasModulePermission('servicios', 'create'))
-        <a href="{{ route('servicios.create', ['area' => $area->id]) }}" 
+        <a href="{{ route('servicios.create', ['area' => $area->id]) }}"
            class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">
             + Crear servicio
         </a>
@@ -67,6 +67,7 @@
                 </td>
 
                 <td class="px-4 py-3 text-right">
+
                     <div class="flex justify-end gap-2 text-xs">
 
                         <a href="{{ route('servicios.show', $servicio->id) }}"
@@ -94,6 +95,7 @@
                         @endif
 
                     </div>
+
                 </td>
 
             </tr>

@@ -70,7 +70,16 @@ class EmployeeVacationController extends Controller
 
         $employee = Employee::findOrFail($request->employee_id);
 
-        $takenDays = Carbon::parse($request->start_date)->diffInDays(Carbon::parse($request->end_date)) + 1;
+        $startDate = Carbon::parse($request->start_date);
+        $endDate = Carbon::parse($request->end_date);
+
+        $takenDays = 0;
+
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            if (!$date->isSunday()) {
+                $takenDays++;
+            }
+        }
 
         $availableDays = (int) $request->available_days;
         $balanceDays = $availableDays - $takenDays;
@@ -80,9 +89,9 @@ class EmployeeVacationController extends Controller
         $primaVacacional = $vacationPay * 0.25;
         $totalPay = $vacationPay + $primaVacacional;
 
-
         $vacation = Vacation::create([
             'employee_id' => $employee->id,
+            'vacation_year' => $request->vacation_year,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'available_days' => $availableDays,
@@ -97,6 +106,7 @@ class EmployeeVacationController extends Controller
 
         return redirect()->route('vacations.receipt', $vacation->id);
     }
+
 
     public function receipt(Vacation $vacation)
     {

@@ -95,6 +95,25 @@
 
                     <input type="hidden" name="employee_id" value="{{ $employee->id }}">
 
+                    <div>
+                        <label for="vacation_year" class="block font-medium mb-1">
+                            Año de vacaciones
+                        </label>
+
+                        <select name="vacation_year" id="vacation_year" class="w-full border rounded-lg p-2" required>
+                            <option value="">Selecciona un año</option>
+                            @for ($i = 1; $i <= 50; $i++)
+                                <option value="{{ $i }}">{{ $i }}° año</option>
+                            @endfor
+                        </select>
+
+                        @error('vacation_year')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+
+                    <br>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Fecha de inicio</label>
@@ -262,7 +281,12 @@
         }).format(value);
     }
 
-   function calculateDays() {
+    function parseLocalDate(dateString) {
+        const [year, month, day] = dateString.split('-').map(Number);
+        return new Date(year, month - 1, day); // fecha local, sin desfase
+    }
+
+    function calculateDays() {
         const startDate = document.getElementById('start_date').value;
         const endDate = document.getElementById('end_date').value;
 
@@ -270,20 +294,17 @@
             return 0;
         }
 
-        const start = new Date(startDate);
-        const end = new Date(endDate);
+        const start = parseLocalDate(startDate);
+        const end = parseLocalDate(endDate);
 
         if (end < start) {
             return 0;
         }
 
         let count = 0;
-
-        // Crear copia para no modificar start
         let currentDate = new Date(start);
 
         while (currentDate <= end) {
-
             // 0 = Domingo
             if (currentDate.getDay() !== 0) {
                 count++;
@@ -296,48 +317,31 @@
     }
 
     function calculateVacations() {
-
         const availableDays = parseFloat(document.getElementById('available_days').value) || 0;
         const salaryDaily = parseFloat(document.getElementById('salary_daily').value) || 0;
 
         const takenDays = calculateDays();
-
         document.getElementById('taken_days').value = takenDays;
 
         const balanceDays = availableDays - takenDays;
-
         const vacationPay = salaryDaily * takenDays;
-
         const primaVacacional = vacationPay * 0.25;
-
         const totalPay = vacationPay + primaVacacional;
 
         document.getElementById('balance_days').value = balanceDays;
-
         document.getElementById('vacation_pay').textContent = money(vacationPay);
-
         document.getElementById('prima_vacacional').textContent = money(primaVacacional);
-
         document.getElementById('total_pay').textContent = money(totalPay);
 
         document.getElementById('vacation_pay_input').value = vacationPay.toFixed(2);
-
         document.getElementById('prima_vacacional_input').value = primaVacacional.toFixed(2);
-
         document.getElementById('total_pay_input').value = totalPay.toFixed(2);
 
         document.getElementById('resultSection').classList.remove('hidden');
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-
-        [
-            'start_date',
-            'end_date',
-            'available_days',
-            'salary_daily'
-        ].forEach(function (id) {
-
+        ['start_date', 'end_date', 'available_days', 'salary_daily'].forEach(function (id) {
             const el = document.getElementById(id);
 
             if (el) {

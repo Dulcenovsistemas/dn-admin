@@ -8,6 +8,7 @@ class Vacation extends Model
 {
     protected $fillable = [
         'employee_id',
+        'vacation_year',
         'start_date',
         'end_date',
         'available_days',
