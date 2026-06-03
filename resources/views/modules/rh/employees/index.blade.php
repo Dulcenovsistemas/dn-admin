@@ -17,6 +17,63 @@
 
 </div>
 
+@if($upcomingBirthdays->count())
+
+<div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+
+    <h3 class="font-semibold text-yellow-800 mb-3">
+        🎂 Próximos cumpleaños
+    </h3>
+
+    <div class="space-y-2">
+
+        @foreach($upcomingBirthdays as $employee)
+
+            @php
+                $birthday = \Carbon\Carbon::parse($employee->birth_date)
+                    ->year(now()->year);
+
+                if ($birthday->isPast()) {
+                    $birthday->addYear();
+                }
+
+                $daysLeft = ceil(now()->floatDiffInDays($birthday));
+            @endphp
+
+            <div class="flex justify-between items-center bg-white rounded-lg p-3">
+
+                <div>
+                    <p class="font-medium">
+                        {{ $employee->name }}
+                        {{ $employee->last_name }}
+                    </p>
+
+                    <p class="text-sm text-gray-500">
+                        {{ $employee->branch->name ?? 'Sin sucursal' }}
+                    </p>
+                </div>
+
+                <div class="text-sm font-semibold text-yellow-700">
+
+                    @if($daysLeft <= 0)
+                        🎉 Hoy cumple años
+                    @elseif($daysLeft == 1)
+                        🎂 Mañana
+                    @else
+                        🎂 En {{ $daysLeft }} días
+                    @endif
+                    
+                </div>
+
+            </div>
+
+        @endforeach
+
+    </div>
+
+</div>
+
+@endif
 
 <!-- FILTROS -->
 <div class="bg-white rounded-xl shadow p-4 mb-6">

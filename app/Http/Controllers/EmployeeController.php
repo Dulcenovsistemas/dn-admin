@@ -10,13 +10,17 @@ use App\Models\Branch;
 use App\Models\JobPosition;
 use Illuminate\Support\Facades\DB;
 
+use App\Services\NotificationService;
+
+
 class EmployeeController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-   public function index(Request $request)
+    public function index(Request $request, NotificationService $notificationService)
     {
+        $upcomingBirthdays = $notificationService->upcomingBirthdays();
 
         $search = trim($request->get('search', ''));
         $branchId = $request->get('branch_id');
@@ -62,6 +66,7 @@ class EmployeeController extends Controller
 
         return view('modules.rh.employees.index', compact(
             'employees',
+            'upcomingBirthdays',
             'search',
             'branches',
             'jobPositions',
