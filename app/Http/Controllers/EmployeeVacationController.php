@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Services\VacationCalculatorService;
 use Illuminate\Http\Request;
+use App\Models\Branch;
+use App\Models\JobPosition;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Vacation;
 use Carbon\Carbon;
@@ -12,7 +15,9 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class EmployeeVacationController extends Controller
 {
-    public function index(Request $request)
+    
+
+     public function index(Request $request)
     {
         $search = trim($request->get('search', ''));
 
@@ -30,10 +35,12 @@ class EmployeeVacationController extends Controller
         return view('modules.rh.vacations.index', compact('employees', 'search'));
     }
 
+
     public function create(Employee $employee)
     {
         return view('modules.rh.vacations.calculator', compact('employee'));
     }
+    
 
     public function calculate(Request $request, VacationCalculatorService $calculator)
     {

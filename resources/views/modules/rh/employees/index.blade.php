@@ -17,6 +17,76 @@
 
 </div>
 
+
+<!-- FILTROS -->
+<div class="bg-white rounded-xl shadow p-4 mb-6">
+    <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+        <!-- Sucursal -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+                Sucursal
+            </label>
+            <select name="branch_id" class="w-full border rounded-lg px-3 py-2">
+                <option value="">Todas</option>
+                @foreach(($branches ?? []) as $branch)
+                    <option value="{{ $branch->id }}"
+                        {{ request('branch_id') == $branch->id ? 'selected' : '' }}>
+                        {{ $branch->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <!-- Puesto -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+                Puesto
+            </label>
+            <select name="job_position_id" class="w-full border rounded-lg px-3 py-2">
+                <option value="">Todos</option>
+
+                @foreach(($jobPositions ?? []) as $position)
+                    <option value="{{ $position->id }}"
+                        {{ request('job_position_id') == $position->id ? 'selected' : '' }}>
+                        {{ $position->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <!-- Departamento -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+                Departamento
+            </label>
+            <select name="department" class="w-full border rounded-lg px-3 py-2">
+                <option value="">Todos</option>
+                @foreach(($departments ?? []) as $department)
+                    <option value="{{ $department }}"
+                        {{ request('department') == $department ? 'selected' : '' }}>
+                        {{ $department }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <!-- Botones -->
+        <div class="flex items-end gap-2">
+            <button type="submit"
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                Filtrar
+            </button>
+
+            <a href="{{ route('employees.index') }}"
+               class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400">
+                Limpiar
+            </a>
+        </div>
+
+    </form>
+</div>
+
 <div class="bg-white rounded-xl shadow overflow-hidden">
 
 <table class="w-full text-sm">

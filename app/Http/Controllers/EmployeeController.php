@@ -8,17 +8,68 @@ use App\Models\EmployeeFile;
 
 use App\Models\Branch;
 use App\Models\JobPosition;
+use Illuminate\Support\Facades\DB;
 
 class EmployeeController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+   public function index(Request $request)
     {
-        $employees = Employee::latest()->get();
 
-        return view('modules.rh.employees.index', compact('employees'));
+        $search = trim($request->get('search', ''));
+        $branchId = $request->get('branch_id');
+        $jobPositionId = $request->get('job_position_id');
+        $department = $request->get('department');
+
+        $employees = Employee::with(['activeVacationPeriod', 'branch', 'jobPosition'])
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('employee_number', 'like', "%{$search}%");
+                });
+            })
+            ->when($branchId, function ($query) use ($branchId) {
+                $query->where('branch_id', $branchId);
+            })
+            ->when($jobPositionId, function ($query) use ($jobPositionId) {
+                $query->where('job_position_id', $jobPositionId);
+            })
+            ->when($department, function ($query) use ($department) {
+                $query->where('department', $department);
+            })
+            ->orderBy('name')
+            ->get();
+
+        $branches = DB::table('branches')
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
+        $jobPositions = DB::table('job_positions')
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
+        $departments = DB::table('employees')
+            ->whereNotNull('department')
+            ->where('department', '!=', '')
+            ->distinct()
+            ->orderBy('department')
+            ->pluck('department');
+
+        return view('modules.rh.employees.index', compact(
+            'employees',
+            'search',
+            'branches',
+            'jobPositions',
+            'departments',
+            'branchId',
+            'jobPositionId',
+            'department'
+        ));
     }
 
     /** 
