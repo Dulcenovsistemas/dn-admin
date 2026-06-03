@@ -22,6 +22,21 @@
 <div class="bg-white rounded-xl shadow p-4 mb-6">
     <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
 
+        <!-- Buscar empleado -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+                Buscar empleado
+            </label>
+
+            <input
+                type="text"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Nombre, apellido o número..."
+                class="w-full border rounded-lg px-3 py-2"
+            >
+        </div>
+
         <!-- Sucursal -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -113,7 +128,7 @@
              <!-- NUMERO DE EMPLEADO -->
             <td class="p-4">
     {{ $employee->employee_number ?? '-' }}
-</td>
+            </td>
 
             <!-- 👤 EMPLEADO -->
             <td class="p-4">
