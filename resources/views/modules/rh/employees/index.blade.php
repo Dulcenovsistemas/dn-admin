@@ -82,11 +82,13 @@
                 @endif
             </div>
 
-            <a href="https://wa.me/5216251333031?text={{ $mensaje }}"
-               target="_blank"
-               class="inline-flex items-center px-3 py-1 text-xs bg-green-600 text-white rounded-lg hover:bg-green-700">
-                📲 Enviar
-            </a>
+            @if(auth()->user()->role === 'admin')
+    <a href="https://wa.me/5216251333031?text={{ $mensaje }}"
+       target="_blank"
+       class="inline-flex items-center px-3 py-1 text-xs bg-green-600 text-white rounded-lg hover:bg-green-700">
+        📲 Enviar
+    </a>
+@endif
 
         </div>
 
