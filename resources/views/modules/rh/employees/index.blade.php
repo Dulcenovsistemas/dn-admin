@@ -19,10 +19,10 @@
 
 @if($upcomingBirthdays->count())
 
-<div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+<div class="bg-white rounded-xl p-4 mb-6">
 
     <h3 class="font-semibold text-yellow-800 mb-3">
-        🎂 Próximos cumpleaños
+        🎂 Próximos cumple
     </h3>
 
     <div class="space-y-2">
@@ -41,12 +41,19 @@
 
         $edad = \Carbon\Carbon::parse($employee->birth_date)->age + ($daysLeft > 0 ? 1 : 0);
 
-        $mensaje = urlencode(
+         $mensaje = urlencode(
             "🎂 RECORDATORIO DE CUMPLEAÑOS\n\n" .
             "Empleado: {$employee->name} {$employee->last_name}\n" .
             "Área: " . ($employee->department ?? 'Sin área') . "\n" .
             "Sucursal: " . ($employee->branch->name ?? 'Sin sucursal') . "\n" .
-            "Edad que cumple: {$edad} años"
+            "Edad que cumple: {$edad} años\n" .
+            (
+                $daysLeft <= 0
+                    ? "Cumpleaños: Hoy"
+                    : ($daysLeft == 1
+                        ? "Cumpleaños: Mañana"
+                        : "Cumpleaños: En {$daysLeft} días")
+            )
         );
     @endphp
 
@@ -90,6 +97,8 @@
 </div>
 
 @endif
+
+<br>
 
 <!-- FILTROS -->
 <div class="bg-white rounded-xl shadow p-4 mb-6">
