@@ -29,47 +29,63 @@
 
         @foreach($upcomingBirthdays as $employee)
 
-            @php
-                $birthday = \Carbon\Carbon::parse($employee->birth_date)
-                    ->year(now()->year);
+    @php
+        $birthday = \Carbon\Carbon::parse($employee->birth_date)
+            ->year(now()->year);
 
-                if ($birthday->isPast()) {
-                    $birthday->addYear();
-                }
+        if ($birthday->isPast()) {
+            $birthday->addYear();
+        }
 
-                $daysLeft = ceil(now()->floatDiffInDays($birthday));
-            @endphp
+        $daysLeft = ceil(now()->floatDiffInDays($birthday));
 
-            <div class="flex justify-between items-center bg-white rounded-lg p-3">
+        $edad = \Carbon\Carbon::parse($employee->birth_date)->age + ($daysLeft > 0 ? 1 : 0);
 
-                <div>
-                    <p class="font-medium">
-                        {{ $employee->name }}
-                        {{ $employee->last_name }}
-                    </p>
+        $mensaje = urlencode(
+            "🎂 RECORDATORIO DE CUMPLEAÑOS\n\n" .
+            "Empleado: {$employee->name} {$employee->last_name}\n" .
+            "Área: " . ($employee->department ?? 'Sin área') . "\n" .
+            "Sucursal: " . ($employee->branch->name ?? 'Sin sucursal') . "\n" .
+            "Edad que cumple: {$edad} años"
+        );
+    @endphp
 
-                    <p class="text-sm text-gray-500">
-                        {{ $employee->branch->name ?? 'Sin sucursal' }}
-                    </p>
-                </div>
+    <div class="flex justify-between items-center bg-white rounded-lg p-3">
 
-                <div class="text-sm font-semibold text-yellow-700">
+        <div>
+            <p class="font-medium">
+                {{ $employee->name }}
+                {{ $employee->last_name }}
+            </p>
 
-                    @if($daysLeft <= 0)
-                        🎉 Hoy cumple años
-                    @elseif($daysLeft == 1)
-                        🎂 Mañana
-                    @else
-                        🎂 En {{ $daysLeft }} días
-                    @endif
-                    
-                </div>
+            <p class="text-sm text-gray-500">
+                {{ $employee->branch->name ?? 'Sin sucursal' }}
+            </p>
+        </div>
 
+        <div class="text-right">
+
+            <div class="text-sm font-semibold text-yellow-700 mb-2">
+                @if($daysLeft <= 0)
+                    🎉 Hoy cumple años
+                @elseif($daysLeft == 1)
+                    🎂 Mañana
+                @else
+                    🎂 En {{ $daysLeft }} días
+                @endif
             </div>
 
-        @endforeach
+            <a href="https://wa.me/5216251333031?text={{ $mensaje }}"
+               target="_blank"
+               class="inline-flex items-center px-3 py-1 text-xs bg-green-600 text-white rounded-lg hover:bg-green-700">
+                📲 Enviar
+            </a>
+
+        </div>
 
     </div>
+
+@endforeach
 
 </div>
 

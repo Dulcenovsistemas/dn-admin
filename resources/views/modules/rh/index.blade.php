@@ -56,6 +56,18 @@ Mantenimiento
 
     </a>
 
+    <form action="{{ route('checadas.importar') }}"
+        method="POST"
+        enctype="multipart/form-data">
+        @csrf
+
+        <input type="file" name="archivo">
+
+        <button type="submit">
+            Importar
+        </button>
+    </form>
+
 
 </div>
 

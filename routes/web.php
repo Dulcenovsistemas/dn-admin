@@ -131,3 +131,11 @@ Route::get('/servicios/create/{area}', [ServicioController::class, 'create'])
     ->name('servicios.create');
 
 Route::resource('servicios', ServicioController::class)->except(['index', 'create']);
+
+use App\Http\Controllers\ChecadaController;
+
+Route::get('/checadas', [ChecadaController::class, 'index'])
+    ->name('checadas.index');
+
+Route::post('/checadas/importar', [ChecadaController::class, 'importar'])
+    ->name('checadas.importar');
