@@ -29,72 +29,83 @@
 
         @foreach($upcomingBirthdays as $employee)
 
-    @php
-        $birthday = \Carbon\Carbon::parse($employee->birth_date)
-            ->year(now()->year);
+        @php
+            $birthday = \Carbon\Carbon::parse($employee->birth_date)
+                ->year(now()->year);
 
-        if ($birthday->isPast()) {
-            $birthday->addYear();
-        }
+            if ($birthday->isPast()) {
+                $birthday->addYear();
+            }
 
-        $daysLeft = ceil(now()->floatDiffInDays($birthday));
+            $daysLeft = ceil(now()->floatDiffInDays($birthday));
 
-        $edad = \Carbon\Carbon::parse($employee->birth_date)->age + ($daysLeft > 0 ? 1 : 0);
+            $edad = \Carbon\Carbon::parse($employee->birth_date)->age + ($daysLeft > 0 ? 1 : 0);
 
-         $mensaje = urlencode(
-            "🎂 RECORDATORIO DE CUMPLEAÑOS\n\n" .
-            "Empleado: {$employee->name} {$employee->last_name}\n" .
-            "Área: " . ($employee->department ?? 'Sin área') . "\n" .
-            "Sucursal: " . ($employee->branch->name ?? 'Sin sucursal') . "\n" .
-            "Edad que cumple: {$edad} años\n" .
-            (
-                $daysLeft <= 0
-                    ? "Cumpleaños: Hoy"
-                    : ($daysLeft == 1
-                        ? "Cumpleaños: Mañana"
-                        : "Cumpleaños: En {$daysLeft} días")
-            )
-        );
-    @endphp
+            // Antigüedad
+            $ingreso = \Carbon\Carbon::parse($employee->hire_date);
+            $antiguedad = $ingreso->diff(now())->format('%y años, %m meses y %d días');
+            $diasEmpresa = $ingreso->diffInDays(now());
 
-    <div class="flex justify-between items-center bg-white rounded-lg p-3">
+            $mensaje = urlencode(
+                "🎂 RECORDATORIO DE CUMPLEAÑOS\n\n" .
+                "Empleado: {$employee->name} {$employee->last_name}\n" .
+                "Área: " . ($employee->department ?? 'Sin área') . "\n" .
+                "Sucursal: " . ($employee->branch->name ?? 'Sin sucursal') . "\n" .
+                "Edad que cumple: {$edad} años\n" .
+                "Antigüedad: {$antiguedad} ({$diasEmpresa} días)\n\n" .
+                (
+                    $daysLeft <= 0
+                        ? "Cumpleaños: Hoy"
+                        : ($daysLeft == 1
+                            ? "Cumpleaños: Mañana"
+                            : "Cumpleaños: En {$daysLeft} días")
+                )
+            );
+        @endphp
 
-        <div>
-            <p class="font-medium">
-                {{ $employee->name }}
-                {{ $employee->last_name }}
-            </p>
+        <div class="flex justify-between items-center bg-white rounded-lg p-3">
 
-            <p class="text-sm text-gray-500">
-                {{ $employee->branch->name ?? 'Sin sucursal' }}
-            </p>
-        </div>
+            <div>
+                <p class="font-medium">
+                    {{ $employee->name }}
+                    {{ $employee->last_name }}
+                </p>
 
-        <div class="text-right">
+                <p class="text-sm text-gray-500">
+                    {{ $employee->branch->name ?? 'Sin sucursal' }}
+                </p>
 
-            <div class="text-sm font-semibold text-yellow-700 mb-2">
-                @if($daysLeft <= 0)
-                    🎉 Hoy cumple años
-                @elseif($daysLeft == 1)
-                    🎂 Mañana
-                @else
-                    🎂 En {{ $daysLeft }} días
-                @endif
+                <p class="text-xs text-gray-400">
+                    Antigüedad: {{ $antiguedad }}
+                </p>
             </div>
 
-            @if(auth()->user()->role === 'admin')
-    <a href="https://wa.me/5216251333031?text={{ $mensaje }}"
-       target="_blank"
-       class="inline-flex items-center px-3 py-1 text-xs bg-green-600 text-white rounded-lg hover:bg-green-700">
-        📲 Enviar
-    </a>
-@endif
+            <div class="text-right">
+
+                <div class="text-sm font-semibold text-yellow-700 mb-2">
+                    @if($daysLeft <= 0)
+                        🎉 Hoy cumple años
+                    @elseif($daysLeft == 1)
+                        🎂 Mañana
+                    @else
+                        🎂 En {{ $daysLeft }} días
+                    @endif
+                </div>
+
+    
+                    <a href="https://wa.me/5216251333031?text={{ $mensaje }}"
+                       target="_blank"
+                       class="inline-flex items-center px-3 py-1 text-xs bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        📲 Enviar
+                    </a>
+
+            </div>
 
         </div>
 
-    </div>
+        @endforeach
 
-@endforeach
+    </div>
 
 </div>
 
