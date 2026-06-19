@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ChecadasImport;
+use App\Exports\ChecadasExport;
 
 class ChecadaController extends Controller
 {
@@ -19,11 +20,16 @@ class ChecadaController extends Controller
             'archivo' => 'required|file|mimes:xls,xlsx'
         ]);
 
+        $import = new ChecadasImport();
+
         Excel::import(
-            new ChecadasImport,
+            $import,
             $request->file('archivo')
         );
 
-        return back()->with('success', 'Archivo importado correctamente.');
+        return Excel::download(
+            new ChecadasExport($import->resultado),
+            'CHECADAS.xlsx'
+        );
     }
 }

@@ -118,11 +118,13 @@ Route::get('/vacations/{vacation}/receipt-pdf', [EmployeeVacationController::cla
 Route::delete('/vacations/{vacation}', [EmployeeVacationController::class, 'destroy'])
     ->name('vacations.destroy');
 
-
 use App\Http\Controllers\ServicioController;
 
 Route::get('/servicios', [ServicioController::class, 'index'])
     ->name('servicios.index');
+
+Route::get('/servicios/sucursal/{id}', [ServicioController::class, 'porSucursal'])
+    ->name('servicios.sucursal');
 
 Route::get('/servicios/area/{area}', [ServicioController::class, 'porArea'])
     ->name('servicios.area');
@@ -130,8 +132,9 @@ Route::get('/servicios/area/{area}', [ServicioController::class, 'porArea'])
 Route::get('/servicios/create/{area}', [ServicioController::class, 'create'])
     ->name('servicios.create');
 
-Route::resource('servicios', ServicioController::class)->except(['index', 'create']);
-
+Route::resource('servicios', ServicioController::class)
+    ->except(['index', 'create']);
+    
 use App\Http\Controllers\ChecadaController;
 
 Route::get('/checadas', [ChecadaController::class, 'index'])
