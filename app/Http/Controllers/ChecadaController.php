@@ -44,7 +44,15 @@ class ChecadaController extends Controller
         ];
 
         // Fecha inicial del periodo
-        $fechaActual = Carbon::parse('2026-05-27');
+        // Obtener periodo desde el Excel
+        $periodo = $rows[2][2];
+
+        // Ejemplo:
+        // 2026-06-17 ~ 2026-06-24
+
+        [$fechaInicio, $fechaFin] = explode(' ~ ', $periodo);
+
+        $fechaActual = Carbon::parse(trim($fechaInicio));
 
         foreach ($dias as $columna => $diaNumero) {
 
