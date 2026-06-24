@@ -38,7 +38,7 @@
                         <option value="">Seleccionar...</option>
                         <option value="Internet">Internet</option>
                         <option value="Camaras">Camaras</option>
-                        <option value="Electrcidad">Electrcidad</option>
+                        <option value="Electricidad">Electricidad</option>
                         <option value="Gas LP">Gas LP</option>
                         <option value="Baños">Baños</option>
                         <option value="Agua">Agua</option>
