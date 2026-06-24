@@ -47,7 +47,7 @@
                         <option value="Pared">Pared</option>
                         <option value="Techo">Techo</option>
                         <option value="Piso">Piso</option>
-                        <option value="Mobilidad">Mobilidad</option>
+                        <option value="Movilidad">Movilidad</option>
                     </select>
                 </div>
 
