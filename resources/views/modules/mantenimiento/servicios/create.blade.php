@@ -37,12 +37,17 @@
                             class="w-full border rounded-lg px-3 py-2">
                         <option value="">Seleccionar...</option>
                         <option value="Internet">Internet</option>
-                        <option value="Telefonía">Telefonía</option>
-                        <option value="Software">Software</option>
-                        <option value="Licencia">Licencia</option>
-                        <option value="Hosting">Hosting</option>
+                        <option value="Camaras">Camaras</option>
+                        <option value="Electrcidad">Electrcidad</option>
+                        <option value="Gas LP">Gas LP</option>
+                        <option value="Baños">Baños</option>
+                        <option value="Agua">Agua</option>
+                        <option value="Drenaje">Drenaje</option>
                         <option value="Seguridad">Seguridad</option>
-                        <option value="Otro">Otro</option>
+                        <option value="Pared">Pared</option>
+                        <option value="Techo">Techo</option>
+                        <option value="Piso">Piso</option>
+                        <option value="Mobilidad">Mobilidad</option>
                     </select>
                 </div>
 

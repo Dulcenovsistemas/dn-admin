@@ -56,18 +56,61 @@ Mantenimiento
 
     </a>
 
-    <form action="{{ route('checadas.importar') }}"
-        method="POST"
-        enctype="multipart/form-data">
-        @csrf
+    <div class="max-w-xl mx-auto mt-10">
 
-        <input type="file" name="archivo">
+    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
 
-        <button type="submit">
-            Importar
-        </button>
-    </form>
+        <h1 class="text-2xl font-bold text-slate-800 mb-2">
+            Importar Checadas
+        </h1>
 
+        <p class="text-slate-500 mb-6">
+            Selecciona el archivo de asistencia generado por el reloj checador.
+        </p>
+
+        <form action="{{ route('checadas.importar') }}"
+              method="POST"
+              enctype="multipart/form-data">
+
+            @csrf
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-slate-700 mb-2">
+                    Archivo Excel
+                </label>
+
+                <input type="file"
+                       name="archivo"
+                       required
+                       accept=".xls,.xlsx"
+                       class="block w-full text-sm text-slate-600
+                              file:mr-4
+                              file:py-2
+                              file:px-4
+                              file:rounded-xl
+                              file:border-0
+                              file:bg-blue-600
+                              file:text-white
+                              file:font-medium
+                              hover:file:bg-blue-700
+                              cursor-pointer">
+            </div>
+
+            <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700
+                           text-white font-semibold
+                           py-3 rounded-xl
+                           transition duration-200">
+
+                📊 Generar Reporte de Checadas
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
 
 </div>
 
