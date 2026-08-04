@@ -26,29 +26,22 @@
 
 
     {{-- SERVICIOS --}}
-@if(auth()->user()->hasModulePermission('servicios','view'))
-    <a href="{{ route('servicios.index') }}" class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
-        <h2 class="font-semibold text-lg">Servicios</h2>
-        <p class="text-sm text-gray-500">Gestión de servicios</p>
-    </a>
-@endif
-
-
-    {{-- ÓRDENES --}}
-    @if(auth()->user()->hasModulePermission('ordenes','view'))
-        <a href="#" 
-           class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
-
-            <h2 class="font-semibold text-lg">
-                Órdenes
-            </h2>
-
-            <p class="text-sm text-gray-500">
-                Órdenes de mantenimiento
-            </p>
-
+    @if(auth()->user()->hasModulePermission('servicios','view'))
+        <a href="{{ route('servicios.index') }}" class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
+            <h2 class="font-semibold text-lg">Servicios</h2>
+            <p class="text-sm text-gray-500">Gestión de servicios</p>
         </a>
     @endif
+
+
+     {{-- ORDENES --}}
+    @if(auth()->user()->hasModulePermission('ordenes','view'))
+        <a href="{{ route('ordenes.index') }}" class="bg-white p-6 rounded-xl shadow hover:shadow-md transition">
+            <h2 class="font-semibold text-lg">Ordenes</h2>
+            <p class="text-sm text-gray-500">Gestión de tickets de ordenes de mantenimeinto</p>
+        </a>
+    @endif
+
 
 
     {{-- BITÁCORA --}}

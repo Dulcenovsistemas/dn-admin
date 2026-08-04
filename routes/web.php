@@ -142,3 +142,33 @@ Route::get('/checadas', [ChecadaController::class, 'index'])
 
 Route::post('/checadas/importar', [ChecadaController::class, 'importar'])
     ->name('checadas.importar');
+
+use App\Http\Controllers\OrdenTrabajoController;
+    
+Route::resource('mantenimiento/ordenes', OrdenTrabajoController::class);
+
+Route::get('/areas/{branch}', [OrdenTrabajoController::class, 'areas']);
+
+Route::get('/equipos-servicios', [OrdenTrabajoController::class, 'equiposServicios']);
+
+Route::post(
+    'ordenes/{ordene}/tomar',
+    [OrdenTrabajoController::class, 'tomar']
+)->name('ordenes.tomar');
+
+Route::post(
+    'ordenes/{ordene}/finalizar',
+    [OrdenTrabajoController::class,'finalizar']
+)->name('ordenes.finalizar');
+
+use App\Http\Controllers\OrdenTrabajoReporteController;
+
+Route::get(
+    'ordenes/{ordene}/cerrar',
+    [OrdenTrabajoReporteController::class, 'create']
+)->name('reportes.create');
+
+Route::post(
+    'ordenes/{ordene}/cerrar',
+    [OrdenTrabajoReporteController::class, 'store']
+)->name('reportes.store');
