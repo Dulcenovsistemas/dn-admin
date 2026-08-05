@@ -134,53 +134,110 @@
                                 </label>
                             </div>
 
-                            @if($module->children->count())
-                                <div class="mt-4 module-children hidden rounded-xl border border-blue-100 bg-white p-4" data-parent="{{ $module->slug }}">
-                                    <h4 class="font-semibold text-sm text-gray-700 mb-3">Submódulos</h4>
+                           @if($module->children->count())
 
-                                    <div class="space-y-3">
-                                        @foreach($module->children as $child)
-                                            <div class="rounded-xl border border-gray-200 bg-gray-50 p-3">
-                                                <h5 class="font-medium text-gray-800 mb-3">{{ $child->name }}</h5>
+    <div class="mt-4 module-children hidden rounded-xl border border-blue-100 bg-white p-4"
+         data-parent="{{ $module->slug }}">
 
-                                                <div class="grid grid-cols-2 gap-2 text-sm text-gray-700">
-                                                    <label class="flex items-center gap-2">
-                                                        <input type="checkbox"
-                                                               class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                                               name="permissions[{{ $child->id }}][view]"
-                                                               {{ isset($userPermissions[$child->id]) && $userPermissions[$child->id]->can_view ? 'checked' : '' }}>
-                                                        <span>Ver</span>
-                                                    </label>
+        <h4 class="font-semibold text-sm text-gray-700 mb-3">
+            Submódulos
+        </h4>
 
-                                                    <label class="flex items-center gap-2">
-                                                        <input type="checkbox"
-                                                               class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                                               name="permissions[{{ $child->id }}][create]"
-                                                               {{ isset($userPermissions[$child->id]) && $userPermissions[$child->id]->can_create ? 'checked' : '' }}>
-                                                        <span>Crear</span>
-                                                    </label>
+        <div class="space-y-3">
+            @foreach($module->children as $child)
 
-                                                    <label class="flex items-center gap-2">
-                                                        <input type="checkbox"
-                                                               class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                                               name="permissions[{{ $child->id }}][edit]"
-                                                               {{ isset($userPermissions[$child->id]) && $userPermissions[$child->id]->can_edit ? 'checked' : '' }}>
-                                                        <span>Editar</span>
-                                                    </label>
+                <div class="rounded-xl border border-gray-200 bg-gray-50 p-3">
 
-                                                    <label class="flex items-center gap-2">
-                                                        <input type="checkbox"
-                                                               class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                                               name="permissions[{{ $child->id }}][delete]"
-                                                               {{ isset($userPermissions[$child->id]) && $userPermissions[$child->id]->can_delete ? 'checked' : '' }}>
-                                                        <span>Eliminar</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endif
+                    <h5 class="font-medium text-gray-800 mb-3">
+                        {{ $child->name }}
+                    </h5>
+
+                    <div class="grid grid-cols-2 gap-2 text-sm text-gray-700">
+
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox"
+                                   class="w-4 h-4 rounded border-gray-300 text-blue-600"
+                                   name="permissions[{{ $child->id }}][view]"
+                                   {{ isset($userPermissions[$child->id]) && $userPermissions[$child->id]->can_view ? 'checked' : '' }}>
+                            <span>Ver</span>
+                        </label>
+
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox"
+                                   class="w-4 h-4 rounded border-gray-300 text-blue-600"
+                                   name="permissions[{{ $child->id }}][create]"
+                                   {{ isset($userPermissions[$child->id]) && $userPermissions[$child->id]->can_create ? 'checked' : '' }}>
+                            <span>Crear</span>
+                        </label>
+
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox"
+                                   class="w-4 h-4 rounded border-gray-300 text-blue-600"
+                                   name="permissions[{{ $child->id }}][edit]"
+                                   {{ isset($userPermissions[$child->id]) && $userPermissions[$child->id]->can_edit ? 'checked' : '' }}>
+                            <span>Editar</span>
+                        </label>
+
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox"
+                                   class="w-4 h-4 rounded border-gray-300 text-blue-600"
+                                   name="permissions[{{ $child->id }}][delete]"
+                                   {{ isset($userPermissions[$child->id]) && $userPermissions[$child->id]->can_delete ? 'checked' : '' }}>
+                            <span>Eliminar</span>
+                        </label>
+
+                    </div>
+
+                </div>
+
+            @endforeach
+        </div>
+
+    </div>
+
+@else
+
+    <div class="mt-4 rounded-xl border border-blue-100 bg-white p-4">
+
+        <div class="grid grid-cols-2 gap-2 text-sm text-gray-700">
+
+            <label class="flex items-center gap-2">
+                <input type="checkbox"
+                       class="w-4 h-4 rounded border-gray-300 text-blue-600"
+                       name="permissions[{{ $module->id }}][view]"
+                       {{ isset($userPermissions[$module->id]) && $userPermissions[$module->id]->can_view ? 'checked' : '' }}>
+                <span>Ver</span>
+            </label>
+
+            <label class="flex items-center gap-2">
+                <input type="checkbox"
+                       class="w-4 h-4 rounded border-gray-300 text-blue-600"
+                       name="permissions[{{ $module->id }}][create]"
+                       {{ isset($userPermissions[$module->id]) && $userPermissions[$module->id]->can_create ? 'checked' : '' }}>
+                <span>Crear</span>
+            </label>
+
+            <label class="flex items-center gap-2">
+                <input type="checkbox"
+                       class="w-4 h-4 rounded border-gray-300 text-blue-600"
+                       name="permissions[{{ $module->id }}][edit]"
+                       {{ isset($userPermissions[$module->id]) && $userPermissions[$module->id]->can_edit ? 'checked' : '' }}>
+                <span>Editar</span>
+            </label>
+
+            <label class="flex items-center gap-2">
+                <input type="checkbox"
+                       class="w-4 h-4 rounded border-gray-300 text-blue-600"
+                       name="permissions[{{ $module->id }}][delete]"
+                       {{ isset($userPermissions[$module->id]) && $userPermissions[$module->id]->can_delete ? 'checked' : '' }}>
+                <span>Eliminar</span>
+            </label>
+
+        </div>
+
+    </div>
+
+@endif
                         </div>
                     @endforeach
                 </div>

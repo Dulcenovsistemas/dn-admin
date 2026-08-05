@@ -98,58 +98,127 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                    @foreach($modules as $module)
+           
+                        @foreach($modules as $module)
                         <div class="rounded-2xl border border-gray-200 bg-gray-50/70 p-5 hover:shadow-md transition">
+
                             <div class="flex items-center justify-between gap-3">
                                 <h3 class="font-semibold text-gray-900">{{ $module->name }}</h3>
                             </div>
 
-                            <label class="mt-4 flex items-center gap-2 text-sm text-gray-700">
-                                <input
-                                    type="checkbox"
-                                    class="module-view w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                    data-module="{{ $module->slug }}"
-                                    name="permissions[{{ $module->id }}][view]">
-                                <span>Ver</span>
-                            </label>
 
-                            @if($module->children->count())
-                                <div class="mt-4 module-children hidden rounded-xl border border-blue-100 bg-white p-4" data-parent="{{ $module->slug }}">
-                                    <h4 class="font-semibold text-sm text-gray-700 mb-3">Submódulos</h4>
+                                
+                                @if($module->children->count())
 
-                                    <div class="space-y-3">
-                                        @foreach($module->children as $child)
-                                            <div class="rounded-xl border border-gray-200 bg-gray-50 p-3">
-                                                <h5 class="font-medium text-gray-800 mb-3">{{ $child->name }}</h5>
+                                    {{-- Módulo con submódulos --}}
+                                    <label class="mt-4 flex items-center gap-2 text-sm text-gray-700">
+                                        <input
+                                            type="checkbox"
+                                            class="module-view w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                            data-module="{{ $module->slug }}"
+                                            name="permissions[{{ $module->id }}][view]">
+                                        <span>Ver</span>
+                                    </label>
 
-                                                <div class="grid grid-cols-2 gap-2 text-sm text-gray-700">
-                                                    <label class="flex items-center gap-2">
-                                                        <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" name="permissions[{{ $child->id }}][view]">
-                                                        <span>Ver</span>
-                                                    </label>
+                                    <div class="mt-4 module-children hidden rounded-xl border border-blue-100 bg-white p-4"
+                                        data-parent="{{ $module->slug }}">
 
-                                                    <label class="flex items-center gap-2">
-                                                        <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" name="permissions[{{ $child->id }}][create]">
-                                                        <span>Crear</span>
-                                                    </label>
+                                        <h4 class="font-semibold text-sm text-gray-700 mb-3">
+                                            Submódulos
+                                        </h4>
 
-                                                    <label class="flex items-center gap-2">
-                                                        <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" name="permissions[{{ $child->id }}][edit]">
-                                                        <span>Editar</span>
-                                                    </label>
+                                        <div class="space-y-3">
+                                            @foreach($module->children as $child)
 
-                                                    <label class="flex items-center gap-2">
-                                                        <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" name="permissions[{{ $child->id }}][delete]">
-                                                        <span>Eliminar</span>
-                                                    </label>
+                                                <div class="rounded-xl border border-gray-200 bg-gray-50 p-3">
+
+                                                    <h5 class="font-medium text-gray-800 mb-3">
+                                                        {{ $child->name }}
+                                                    </h5>
+
+                                                    <div class="grid grid-cols-2 gap-2 text-sm text-gray-700">
+
+                                                        <label class="flex items-center gap-2">
+                                                            <input type="checkbox"
+                                                                class="w-4 h-4 rounded border-gray-300 text-blue-600"
+                                                                name="permissions[{{ $child->id }}][view]">
+                                                            <span>Ver</span>
+                                                        </label>
+
+                                                        <label class="flex items-center gap-2">
+                                                            <input type="checkbox"
+                                                                class="w-4 h-4 rounded border-gray-300 text-blue-600"
+                                                                name="permissions[{{ $child->id }}][create]">
+                                                            <span>Crear</span>
+                                                        </label>
+
+                                                        <label class="flex items-center gap-2">
+                                                            <input type="checkbox"
+                                                                class="w-4 h-4 rounded border-gray-300 text-blue-600"
+                                                                name="permissions[{{ $child->id }}][edit]">
+                                                            <span>Editar</span>
+                                                        </label>
+
+                                                        <label class="flex items-center gap-2">
+                                                            <input type="checkbox"
+                                                                class="w-4 h-4 rounded border-gray-300 text-blue-600"
+                                                                name="permissions[{{ $child->id }}][delete]">
+                                                            <span>Eliminar</span>
+                                                        </label>
+
+                                                    </div>
+
                                                 </div>
-                                            </div>
-                                        @endforeach
+
+                                            @endforeach
+                                        </div>
+
                                     </div>
-                                </div>
-                            @endif
-                        </div>
-                    @endforeach
+
+                                @else
+
+                {{-- Módulo sin submódulos --}}
+                <div class="mt-4 rounded-xl border border-blue-100 bg-white p-4">
+
+                    <div class="grid grid-cols-2 gap-2 text-sm text-gray-700">
+
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox"
+                                class="w-4 h-4 rounded border-gray-300 text-blue-600"
+                                name="permissions[{{ $module->id }}][view]">
+                            <span>Ver</span>
+                        </label>
+
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox"
+                                class="w-4 h-4 rounded border-gray-300 text-blue-600"
+                                name="permissions[{{ $module->id }}][create]">
+                            <span>Crear</span>
+                        </label>
+
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox"
+                                class="w-4 h-4 rounded border-gray-300 text-blue-600"
+                                name="permissions[{{ $module->id }}][edit]">
+                            <span>Editar</span>
+                        </label>
+
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox"
+                                class="w-4 h-4 rounded border-gray-300 text-blue-600"
+                                name="permissions[{{ $module->id }}][delete]">
+                            <span>Eliminar</span>
+                        </label>
+
+                    </div>
+
+                </div>
+
+            @endif
+
+        </div>
+    @endforeach
+</div>
                 </div>
             </div>
 
