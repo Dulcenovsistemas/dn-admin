@@ -172,3 +172,8 @@ Route::post(
     'ordenes/{ordene}/cerrar',
     [OrdenTrabajoReporteController::class, 'store']
 )->name('reportes.store');
+
+Route::get(
+    '/equipos/area/{id}/exportar',
+    [EquipoController::class, 'exportarArea']
+)->name('equipos.area.exportar');

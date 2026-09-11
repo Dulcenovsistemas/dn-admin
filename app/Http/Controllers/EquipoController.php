@@ -9,6 +9,9 @@ use App\Models\Branch;
 use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
+use App\Exports\EquiposExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class EquipoController extends Controller
 {
     public function index()
@@ -259,6 +262,17 @@ class EquipoController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Error al eliminar el equipo');
         }
+    }
+
+
+    public function exportarArea($id)
+    {
+        $area = Area::findOrFail($id);
+
+        return Excel::download(
+            new EquiposExport($area->id),
+            'equipos_' . Str::slug($area->name) . '.xlsx'
+        );
     }
 }
 

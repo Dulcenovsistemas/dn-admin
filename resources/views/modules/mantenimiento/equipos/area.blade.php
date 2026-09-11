@@ -12,20 +12,44 @@
 
 <div class="mb-6 flex justify-between items-center">
 
-    <a href="{{ route('equipos.sucursal', $area->branch_id) }}" 
-       class="text-blue-600 hover:underline text-sm">
+    <a
+        href="{{ route('equipos.sucursal', $area->branch_id) }}"
+        class="text-blue-600 hover:underline text-sm"
+    >
         ← Volver a áreas
     </a>
 
-    @if(auth()->user()->hasModulePermission('equipos', 'create'))
-        <a href="{{ route('equipos.create', ['area' => $area->id]) }}" 
-        class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition">
-            + Crear equipo
+
+    <div class="flex items-center gap-3">
+
+        {{-- Exportar Excel --}}
+        <a
+            href="{{ route('equipos.area.exportar', $area->id) }}"
+            class="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700 transition"
+        >
+            <span>↓</span>
+            Exportar Excel
         </a>
-    @endif
-   
-    
+
+
+        {{-- Crear equipo --}}
+        @if(auth()->user()->hasModulePermission('equipos', 'create'))
+
+            <a
+                href="{{ route('equipos.create', ['area' => $area->id]) }}"
+                class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+            >
+                <span>+</span>
+                Crear equipo
+            </a>
+
+        @endif
+
+    </div>
+
 </div>
+
+
 
 <div class="bg-white rounded-xl shadow overflow-hidden">
 
