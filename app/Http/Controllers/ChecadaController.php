@@ -3,13 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\ChecadasImport;
-use App\Exports\ChecadasExport;
-
-use Carbon\Carbon;
-
-use PhpOffice\PhpSpreadsheet\IOFactory;
+use Symfony\Component\Process\Process;
 
 class ChecadaController extends Controller
 {
@@ -20,100 +14,63 @@ class ChecadaController extends Controller
 
     public function importar(Request $request)
     {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xls,xlsx',
+        ]);
+
         $archivo = $request->file('archivo');
 
-        $spreadsheet = IOFactory::load($archivo->getRealPath());
+        // Carpeta temporal para los archivos del proceso
+        $carpeta = storage_path('app/temp');
 
-        $sheet = $spreadsheet->getSheetByName('Reporte de Asistencia');
-
-        $rows = $sheet->toArray();
-
-        $dias = $rows[3];
-
-        $resultado = [
-            [
-                'ID',
-                'NOMBRE',
-                'FECHA',
-                'ENTRADA',
-                'SALIDA',
-                'HRS',
-                'HRS EXT',
-                'OBSERVACIONES'
-            ]
-        ];
-
-        // Fecha inicial del periodo
-        // Obtener periodo desde el Excel
-        $periodo = $rows[2][2];
-
-        // Ejemplo:
-        // 2026-06-17 ~ 2026-06-24
-
-        [$fechaInicio, $fechaFin] = explode(' ~ ', $periodo);
-
-        $fechaActual = Carbon::parse(trim($fechaInicio));
-
-        foreach ($dias as $columna => $diaNumero) {
-
-            $fechas[$columna] = $fechaActual->copy();
-
-            $fechaActual->addDay();
+        if (!is_dir($carpeta)) {
+            mkdir($carpeta, 0777, true);
         }
 
-        for ($i = 4; $i < count($rows); $i += 2) {
+        // Archivo de entrada
+        $entrada = $archivo->getRealPath();
 
-            $empleado = $rows[$i];
-            $checadas = $rows[$i + 1] ?? [];
+        // Archivo de salida
+        $salida = $carpeta . DIRECTORY_SEPARATOR . 'Control_Asistencia_RH.xlsx';
 
-            $id = $empleado[2] ?? null;
-            $nombre = trim($empleado[10] ?? '');
+        // Ejecutar Python
+        $python = base_path('python/.venv/Scripts/python.exe');
+        $script = base_path('python/generar_reporte.py');
 
-            if (!$id || !$nombre) {
-                continue;
-            }
+        $process = new Process([
+            $python,
+            $script,
+            $entrada,
+            $salida,
+        ]);
 
-            foreach ($dias as $columna => $dia) {
+        $process->setTimeout(120);
+        $process->run();
 
-                $valor = $checadas[$columna] ?? null;
+        // Si Python encontró un error
+        if (!$process->isSuccessful()) {
 
-                if (empty($valor)) {
-                    continue;
-                }
-
-                // Ejemplo: 08:0017:14
-                if (strlen($valor) < 10) {
-                    continue;
-                }
-
-                $entrada = substr($valor, 0, 5);
-                $salida  = substr($valor, 5, 5);
-
-                $entradaCarbon = Carbon::createFromFormat('H:i', $entrada);
-                $salidaCarbon  = Carbon::createFromFormat('H:i', $salida);
-
-                $minutos = $entradaCarbon->diffInMinutes($salidaCarbon);
-
-                $hrs = round($minutos / 60, 2);
-
-                $hrsExt = round($hrs - 8, 2);
-
-                $resultado[] = [
-                        $id,
-                        $nombre,
-                        $fechas[$columna]->format('d/m/Y'),
-                        $entrada,
-                        $salida,
-                        $hrs,
-                        $hrsExt,
-                        ''
-                    ];
-            }
+            return back()->with(
+                'error',
+                'No se pudo generar el reporte: ' . $process->getErrorOutput()
+            );
         }
 
-        return Excel::download(
-            new ChecadasExport($resultado),
-            '02_CHECADAS.xlsx'
-        );
+        // Verificar que realmente se creó el Excel
+        if (!file_exists($salida)) {
+
+            return back()->with(
+                'error',
+                'Python terminó correctamente, pero no se encontró el archivo generado.'
+            );
+        }
+
+        // Descargar el reporte
+        return response()
+            ->download(
+                $salida,
+                'Control_Asistencia_RH.xlsx'
+            )
+            ->deleteFileAfterSend(true);
     }
 }
