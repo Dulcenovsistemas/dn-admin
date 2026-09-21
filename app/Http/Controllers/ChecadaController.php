@@ -34,7 +34,9 @@ class ChecadaController extends Controller
         $salida = $carpeta . DIRECTORY_SEPARATOR . 'Control_Asistencia_RH.xlsx';
 
         // Ejecutar Python
-        $python = base_path('python/.venv/Scripts/python.exe');
+        $python = PHP_OS_FAMILY === 'Windows'
+                ? base_path('python/.venv/Scripts/python.exe')
+                : base_path('python/.venv/bin/python');
         $script = base_path('python/generar_reporte.py');
 
         $process = new Process([
