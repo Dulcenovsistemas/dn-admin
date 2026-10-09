@@ -300,43 +300,68 @@
 
             </td>
 
-            <!-- ⚙️ ACCIONES -->
+                        
+            {{-- ACCIONES --}}
             <td class="p-4">
+                <div class="flex justify-end gap-3 items-center">
 
-                <div class="flex justify-end gap-3">
-
+                    {{-- VER --}}
                     <a href="{{ route('employees.show', $employee->id) }}"
-                        class="text-slate-600 hover:underline">
-                            Ver
-                        </a>
+                    class="text-slate-600 hover:underline">
+                        Ver
+                    </a>
 
-
-                    
-                    @if(auth()->user()->hasModulePermission('empleados', 'edit'))
+                    {{-- EDITAR: solo empleados activos --}}
+                    @if(
+                        $employee->status === 'active' &&
+                        auth()->user()->hasModulePermission('empleados', 'edit')
+                    )
                         <a href="{{ route('employees.edit', $employee->id) }}"
                         class="text-blue-600 hover:underline">
                             Editar
                         </a>
                     @endif
 
-                    @if(auth()->user()->hasModulePermission('empleados', 'delete'))
-                        <form action="{{ route('employees.destroy', $employee->id) }}"
+                   
+                    {{-- DAR DE BAJA --}}
+                    @if(
+                        $employee->status === 'active' &&
+                        auth()->user()->hasModulePermission('empleados', 'delete')
+                    )
+                        <button
+                            type="button"
+                            onclick="abrirModalBaja(
+                                {{ $employee->id }},
+                                @js($employee->name . ' ' . $employee->last_name)
+                            )"
+                            class="text-red-600 hover:underline">
+                            Dar de baja
+                        </button>
+                    @endif
+
+
+                    {{-- REACTIVAR --}}
+                    @if(
+                        $employee->status !== 'active' &&
+                        auth()->user()->hasModulePermission('empleados', 'edit')
+                    )
+                        <form action="{{ route('employees.activate', $employee->id) }}"
                             method="POST"
-                            onsubmit="return confirm('¿Eliminar empleado?')">
+                            onsubmit="return confirm('¿Deseas reactivar a este empleado?');">
 
                             @csrf
-                            @method('DELETE')
+                            @method('PATCH')
 
-                            <button class="text-red-500 hover:underline">
-                                Eliminar
+                            <button type="submit"
+                                    class="text-green-600 hover:underline">
+                                Reactivar
                             </button>
-
                         </form>
                     @endif
 
                 </div>
-
             </td>
+
 
         </tr>
 
@@ -355,5 +380,87 @@
 </table>
 
 </div>
+
+
+{{-- MODAL DE BAJA --}}
+<div id="modalBaja"
+     class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
+
+    <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+
+        <div class="mb-5 flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-gray-800">
+                Dar de baja al empleado
+            </h2>
+
+            <button type="button"
+                    onclick="cerrarModalBaja()"
+                    class="text-gray-500 hover:text-gray-800">
+                ✕
+            </button>
+        </div>
+
+        <p class="mb-4 text-sm text-gray-600">
+            Empleado: <strong id="nombreEmpleadoBaja"></strong>
+        </p>
+
+        <form id="formBaja" method="POST">
+            @csrf
+            @method('PATCH')
+
+            <label for="termination_date"
+                   class="mb-2 block text-sm font-medium text-gray-700">
+                Fecha efectiva de baja
+            </label>
+
+            <input
+                type="date"
+                id="termination_date"
+                name="termination_date"
+                max="{{ now()->toDateString() }}"
+                value="{{ now()->toDateString() }}"
+                required
+                class="mb-5 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-red-500 focus:outline-none">
+
+            <div class="flex justify-end gap-3">
+                <button type="button"
+                        onclick="cerrarModalBaja()"
+                        class="rounded-lg bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300">
+                    Cancelar
+                </button>
+
+                <button type="submit"
+                        class="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700">
+                    Confirmar baja
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script>
+    function abrirModalBaja(id, nombre) {
+        const modal = document.getElementById('modalBaja');
+        const form = document.getElementById('formBaja');
+
+        form.action = `/employees/${id}/deactivate`;
+
+        document.getElementById('nombreEmpleadoBaja').textContent = nombre;
+        document.getElementById('termination_date').value =
+            '{{ now()->toDateString() }}';
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function cerrarModalBaja() {
+        const modal = document.getElementById('modalBaja');
+
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+</script>
+
 
 @endsection

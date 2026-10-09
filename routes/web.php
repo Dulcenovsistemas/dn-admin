@@ -177,3 +177,14 @@ Route::get(
     '/equipos/area/{id}/exportar',
     [EquipoController::class, 'exportarArea']
 )->name('equipos.area.exportar');
+
+
+Route::patch('/employees/{employee}/deactivate', [
+    EmployeeController::class,
+    'deactivate'
+])->name('employees.deactivate');
+
+Route::patch('/employees/{employee}/activate', [
+    EmployeeController::class,
+    'activate'
+])->name('employees.activate');

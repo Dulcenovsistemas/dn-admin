@@ -34,7 +34,8 @@ class Employee extends Model
         'photo',
 
         'branch_id',
-        'job_position_id'
+        'job_position_id',
+        'termination_date'
 
     ];
 

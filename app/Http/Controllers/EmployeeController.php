@@ -329,4 +329,53 @@ class EmployeeController extends Controller
             ->route('employees.index')
             ->with('success', 'Empleado eliminado');
     }
+
+
+    
+    public function deactivate(Request $request, Employee $employee)
+    {
+        $request->validate([
+            'termination_date' => 'required|date|before_or_equal:today',
+        ]);
+
+        if ($employee->status !== 'active') {
+            return redirect()
+                ->route('employees.index')
+                ->with('error', 'El empleado ya se encuentra inactivo.');
+        }
+
+        $employee->update([
+            'status' => 'inactive',
+            'termination_date' => $request->termination_date,
+        ]);
+
+        return redirect()
+            ->route('employees.index')
+            ->with('success', 'Empleado dado de baja correctamente.');
+    }
+
+
+    
+/**
+ * Reactivar a un empleado.
+ */
+    public function activate(Employee $employee)
+    {
+        if ($employee->status === 'active') {
+            return redirect()
+                ->route('employees.index')
+                ->with('error', 'El empleado ya se encuentra activo.');
+        }
+
+        $employee->update([
+            'status' => 'active',
+            'termination_date' => null,
+        ]);
+
+        return redirect()
+            ->route('employees.index')
+            ->with('success', 'Empleado reactivado correctamente.');
+    }
+
+
 }
